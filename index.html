@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Handcrafted brass jewelry by Jess Boubie Craft, rooted in Dusun tradition.">
+    <title>Jess Boubie Craft | Artisan Brass Jewelry</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <img src="images/JBC_logo.jpg" alt="Jess Boubie Craft logo" class="logo">
+            <h1>Jess Boubie Craft</h1>
+        </div>
+        <p>Handcrafted brass jewelry, rooted in Dusun tradition.</p>
+    </header>
+
+    <main>
+
+        <!-- ============================================= -->
+        <!-- SECTION 1: THE CATALOGUE -->
+        <!-- ============================================= -->
+        <section id="catalogue">
+            <div class="container">
+                <h2>What We Sell</h2>
+                <div class="product-grid">
+
+                    <!-- PRODUCT CARD TEMPLATE — copy this whole <article> block for every bracelet -->
+                    <article class="product-card">
+                        <img src="images/bracelet_triangle.jpg" alt="Triangle Patterned Brass Bracelet">
+                        <h3>Bukit bakat</h3>
+                        <p class="price">RM 65</p>
+                        <p class="lore">Inspired by the people of dusun that lives around mountaineous areas.</p>
+                    </article>
+
+                    <article class="product-card">
+                        <img src="images/bracelet_liningkong.jpg" alt="Wave Shaped Brass Bracelet">
+                        <h3>Liningkong</h3>
+                        <p class="price">RM 75</p>
+                        <p class="lore">Inspired by the waves of life's journey, this bracelet represents resilience through both challenges and success.</p>
+                    </article>
+
+                    <!-- Duplicate the <article> above for each additional product -->
+                    <!-- Is there a way so that I dont need to bring the image file into the same folder as this html but a separate one in their own folder?-->
+                    <!-- For now the picture takes on the entire page, How do I tone it down-->
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- SECTION 2: HISTORY & CONTACT -->
+        <!-- ============================================= -->
+        <section id="about">
+            <div class="container">
+                <h2>Our History & Contact</h2>
+                <article class="story-block">
+                        <div class="story-text">
+                            <h3>Our Story</h3>
+                            <p>Jess Boubie Craft is a homemade artisan business started in 2017. All crafts are made by one artisan.</p>
+                            <p>In some Dusun traditions, brass bracelets are associated with cultural beliefs and practices, including the concept of "Buang Angin". These traditions continue to inspire many of our handcrafted designs today. </p>
+                        </div>
+                        <div class="story-images">
+                            <figure>
+                                <img src="images/JBC_jess.jpg" alt="The artisan wearing her masterwork headpiece" loading="eager"> <!--Use lazy if its far down-->
+                                <figcaption>Jess, the artisan behind every piece</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="images/JBC_suzen.jpg" alt="Model wearing JBC Crafts" loading="eager">
+                                <figcaption>Styled with our brass collection</figcaption>
+                            </figure>
+                        </div>
+                </article>
+                <section class="contact-block">
+                    <h3>Get in Touch</h3> <!--Writing 'Get In Touch' here kinda intersects with the brown pill-->
+                    <ul class="contact-list">
+                        <li><a href="https://wa.me/60178580427" target="_blank" rel="noopener">WhatsApp Us</a></li>
+                        <li><a href="https://instagram.com/JessBoubie_Craft" target="_blank" rel="noopener">Follow on Instagram</a></li>
+                    </ul>
+                </section>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Jess Boubie Craft. All rights reserved.</p>
+    </footer>
+
+    <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Image preview">
+        <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<!--What does that mean when people misuse article html alot-->
+<!--Whats with the index.html script.js style.css why these repeatedly, I dont get it, cant i name it my own-->
