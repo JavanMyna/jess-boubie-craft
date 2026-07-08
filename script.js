@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function update() {
+            if (cards.length === 0) return;   // guard: empty grid, nothing to animate
             const cardWidth = cards[0].getBoundingClientRect().width;
             const gap = parseFloat(getComputedStyle(track).gap) || 0;
             const step = cardWidth + gap;

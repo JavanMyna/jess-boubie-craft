@@ -19,13 +19,6 @@ html {
     padding: 0;
 }
 
-body {
-    font-family: 'Segoe UI', sans-serif;
-    line-height: 1.6;
-    color: var(--color-text);
-    background-color: var(--color-bg);
-}
-
 /* ============================================= */
 /* 2. FONT CHANGE */
 /* ============================================= */
@@ -41,6 +34,7 @@ body {
     color: var(--color-text);
     background-color: var(--color-bg);
 }
+
 
 /* Targeting .brand h1 specifically (not all h1s) keeps this scoped —
    same "separation of concerns" idea you're already using: HTML says
@@ -173,6 +167,25 @@ header, footer {
     background: #fff;
 }
 
+/* ============================================= */
+/* CATALOGUE-SPECIFIC OVERRIDES (dark bg)        */
+/* ============================================= */
+#catalogue .slider-btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-primary);
+}
+
+#catalogue .slider-btn:hover {
+    background: #fff;
+}
+
+#catalogue .dot {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+#catalogue .dot.active {
+    background: #fff;
+}
 
 /* ============================================= */
 /* 3. THE CATALOGUE GRID — the important part */
@@ -185,7 +198,7 @@ header, footer {
         url('images/JBC_suzen.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* optional parallax — delete this one line if it feels janky when you test on your phone */
+        background-attachment: fixed; /* WARNING: iOS Safari often ignores or breaks this. Delete if janky on mobile (Step 7). */
 }
 
 /* Scoped to just the h2 inside #catalogue's container, so we don't
@@ -273,10 +286,6 @@ header, footer {
     max-width: 80%;
     max-height: 80%;
     border-radius: 8px;
-}
-
-.product-card img {
-    cursor: zoom-in;
 }
 
 /* ============================================= */
