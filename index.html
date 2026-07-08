@@ -27,59 +27,61 @@
                 <h2>What We Sell</h2>
 
                 <!-- The whole slider unit: prev button + window + next button, side by side -->
-                <div class="slider">
+                <div class="slider-wrapper">
+                    <div class="slider">
 
-                    <!-- Prev/Next buttons carry a data-dir attribute instead of two separate
-                        functions. Python analogy: instead of writing prevBtn() and nextBtn()
-                        as two near-duplicate functions, we write ONE move(direction) function
-                        and just pass -1 or +1 into it — like using a dict {'prev': -1, 'next': 1}
-                        to drive a single handler instead of branching logic twice. -->
-                    <button type="button" class="slider-btn slider-prev" data-dir="-1" aria-label="Previous products">&lt;</button>
+                        <!-- Prev/Next buttons carry a data-dir attribute instead of two separate
+                            functions. Python analogy: instead of writing prevBtn() and nextBtn()
+                            as two near-duplicate functions, we write ONE move(direction) function
+                            and just pass -1 or +1 into it — like using a dict {'prev': -1, 'next': 1}
+                            to drive a single handler instead of branching logic twice. -->
+                        <button type="button" class="slider-btn slider-prev" data-dir="-1" aria-label="Previous products">&lt;</button>
 
-                    <!-- THE WINDOW. Only job: clip anything outside its box. Never moves itself. -->
-                    <div class="slider-viewport">
+                        <!-- THE WINDOW. Only job: clip anything outside its box. Never moves itself. -->
+                        <div class="slider-viewport">
 
-                        <!-- THE CONVEYOR BELT. Same class name as before (.product-grid) so
-                            your existing lightbox click-listener still finds it. -->
-                        <div class="product-grid">
+                            <!-- THE CONVEYOR BELT. Same class name as before (.product-grid) so
+                                your existing lightbox click-listener still finds it. -->
+                            <div class="product-grid">
 
-                            <article class="product-card">
-                                <img src="images/bracelet_triangle.jpg" alt="Triangle Patterned Brass Bracelet">
-                                <h3>Bukit bakat</h3>
-                                <p class="price">RM 65</p>
-                                <p class="lore">Inspired by the people of dusun that lives around mountaineous areas.</p>
-                            </article>
+                                <article class="product-card">
+                                    <img src="images/bracelet_triangle.jpg" alt="Triangle Patterned Brass Bracelet">
+                                    <h3>Bukit bakat</h3>
+                                    <p class="price">RM 65</p>
+                                    <p class="lore">Inspired by the people of dusun that lives around mountaineous areas.</p>
+                                </article>
 
-                            <article class="product-card">
-                                <img src="images/bracelet_liningkong.jpg" alt="Ram horn Shaped Brass Bracelet">
-                                <h3>Liningkong</h3>
-                                <p class="price">RM 75</p>
-                                <p class="lore">Inspired by traditional Dusun artistry, featuring a horn-shaped brass motif.</p>
-                            </article>
+                                <article class="product-card">
+                                    <img src="images/bracelet_liningkong.jpg" alt="Ram horn Shaped Brass Bracelet">
+                                    <h3>Liningkong</h3>
+                                    <p class="price">RM 75</p>
+                                    <p class="lore">Inspired by traditional Dusun artistry, featuring a horn-shaped brass motif.</p>
+                                </article>
 
-                            <article class="product-card">
-                                <img src="images/bracelet_waves.jpg" alt="Wave Shaped Brass Bracelet">
-                                <h3>Wave</h3>
-                                <p class="price">RM 75</p>
-                                <p class="lore">Inspired by the waves of life's journey, this bracelet represents resilience through both challenges and success.</p>
-                            </article>
+                                <article class="product-card">
+                                    <img src="images/bracelet_waves.jpg" alt="Wave Shaped Brass Bracelet">
+                                    <h3>Wave</h3>
+                                    <p class="price">RM 75</p>
+                                    <p class="lore">Inspired by the waves of life's journey, this bracelet represents resilience through both challenges and success.</p>
+                                </article>
 
-                            <article class="product-card">
-                                <img src="images/ring_thickPlate.jpg" alt="Thick Plated Brass Ring">
-                                <h3>Kinabalu Crest Brass Ring</h3>
-                                <p class="price">RM 85</p>
-                                <p class="lore">A bold handcrafted brass ring inspired by the strength and beauty of Borneo's natural landscapes.</p>
-                            </article>
+                                <article class="product-card">
+                                    <img src="images/ring_thickPlate.jpg" alt="Thick Plated Brass Ring">
+                                    <h3>Kinabalu Crest Brass Ring</h3>
+                                    <p class="price">RM 85</p>
+                                    <p class="lore">A bold handcrafted brass ring inspired by the strength and beauty of Borneo's natural landscapes.</p>
+                                </article>
 
-                            <!-- Add as many <article class="product-card"> as you want here.
-                                You will NOT touch the JS when you add more — that's the
-                                whole point of Phase 3. -->
-
+                                <!-- Add as many <article class="product-card"> as you want here.-->
+                            </div>
                         </div>
+
+                        <button type="button" class="slider-btn slider-next" data-dir="1" aria-label="Next products">&gt;</button>
                     </div>
 
-                    <button type="button" class="slider-btn slider-next" data-dir="1" aria-label="Next products">&gt;</button>
+                    <div class="dots"></div>
                 </div>
+
             </div>
         </section>
 
@@ -107,7 +109,7 @@
                         </div>
                 </article>
                 <section class="contact-block">
-                    <h3>Get in Touch</h3> <!--Writing 'Get In Touch' here kinda intersects with the brown pill-->
+                    <h3>Get in Touch</h3> 
                     <ul class="contact-list">
                         <li><a href="https://wa.me/60178580427" target="_blank" rel="noopener">WhatsApp Us</a></li>
                         <li><a href="https://instagram.com/JessBoubie_Craft" target="_blank" rel="noopener">Follow on Instagram</a></li>
@@ -130,6 +132,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-<!--What does that mean when people misuse article html alot-->
-<!--Whats with the index.html script.js style.css why these repeatedly, I dont get it, cant i name it my own-->

@@ -123,6 +123,33 @@ header, footer {
 }
 
 /* ============================================= */
+/* The dots                                      */
+/* ============================================= */
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.dot {
+    /* Buttons come with browser-default border/background/padding —
+       reset all of it so it looks like your plain circle again. */
+    border: none;
+    padding: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+}
+
+.dot.active {
+    background: var(--color-primary);
+}
+
+
+/* ============================================= */
 /* 3. THE CATALOGUE GRID — the important part */
 /* ============================================= */
 #catalogue {
