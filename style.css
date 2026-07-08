@@ -199,14 +199,23 @@ header, footer {
 /* 5. THE CATALOGUE GRID — the important part */
 /* ============================================= */
 #catalogue {
-    padding: 4rem 2rem; /* was 2rem — more breathing room now that there's a full photo behind the cards */
+    padding: 4rem 2rem;
 
     background-image:
         linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
         url('images/JBC_suzen.jpg');
     background-size: cover;
     background-position: center;
-    /*background-attachment: fixed; //imma remove it then. WARNING: iOS Safari often ignores or breaks this. Delete if janky on mobile (Step 7). */ 
+    /* Parallax on desktop: the background stays still while content scrolls. */
+    background-attachment: fixed;
+}
+
+/* Phones and tablets often choke on background-attachment: fixed.
+   On touch devices, let the background scroll naturally with the page. */
+@media (hover: none) and (pointer: coarse) {
+    #catalogue {
+        background-attachment: scroll;
+    }
 }
 
 /* Scoped to just the h2 inside #catalogue's container, so we don't
@@ -382,12 +391,14 @@ header, footer {
 
 .story-images img {
     width: 100%;
-    min-width: 0; /* override the intrinsic 400px minimum from the HTML width attribute */
-    height: 380px;          /* taller box → far less has to be cropped to fill it */
+    min-width: 0;
+    height: 380px;
     object-fit: cover;
-    object-position: top;   /* anchor the crop to the TOP edge instead of
-                                dead-center — keeps the head/shoulders in
-                                frame instead of slicing through the middle */
+    /* object-position is like sliding a photo under a fixed frame.
+       50% 25% = centered horizontally, cropped 25% down from the top.
+       Increase the second number to show more of her face.
+       Decrease it to show more of the top of the photo. */
+    object-position: 100% 80%; /*I kinda want the picture to go a little bit right and up but I think i reached the max*/
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     display: block;
@@ -541,7 +552,7 @@ section {
 }
 
 /* ============================================= */
-/* BATCH 1 MOBILE OVERRIDES                      */
+/* BATCH 1 + 2 MOBILE OVERRIDES                  */
 /* ============================================= */
 @media (max-width: 700px) {
     .shortcut-nav ul {
@@ -554,7 +565,7 @@ section {
 
     /* Arrows sit in the side gutters, NOT on top of the card */
     .slider {
-        gap: 0; /* buttons are absolute, so flex gap is irrelevant here */
+        gap: 0;
     }
     .slider-btn {
         position: absolute;
@@ -565,12 +576,29 @@ section {
         font-size: 0.95rem;
         z-index: 5;
     }
-    .slider-prev { left: -1.75rem; }  /* push into the left gutter */
-    .slider-next { right: -1.75rem; } /* push into the right gutter */
+    .slider-prev { left: -1.75rem; }
+    .slider-next { right: -1.75rem; }
 
     /* Bigger logo on small screens */
     .logo {
         width: 70px;
         height: 70px;
     }
+
+    /* Frosted-glass cards so the scrolling background peeks through */
+    .product-card {
+        background: rgba(255, 255, 255, 0.85);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+    }
+}
+
+/* ============================================= */
+/* DISCLAIMER                                    */
+/* ============================================= */
+.disclaimer {
+    font-size: 0.9rem;
+    font-style: italic;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
 }
