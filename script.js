@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxImg = document.getElementById('lightbox-img');
     // Find every product image on the page
     // Attach a click "handler" to each one
-    document.querySelector('.product-grid').addEventListener('click', (e) => {
+    document.querySelector('#catalogue').addEventListener('click', (e) => {
         const img = e.target.closest('.product-card img');
         if (!img) return;
         lightboxImg.src = img.src;

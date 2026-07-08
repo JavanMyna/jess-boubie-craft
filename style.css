@@ -191,8 +191,16 @@ header, footer {
 /* Scoped to just the h2 inside #catalogue's container, so we don't
    accidentally whiten text inside the cards too — same "don't let one
    fix leak into unrelated elements" principle as before. */
-#catalogue .container > h2 {
+#catalogue h2 {
     color: #fff;
+}
+
+.category {
+    margin-bottom: 3rem;
+}
+
+.category:last-child {
+    margin-bottom: 0;   /* no trailing gap after the final category */
 }
 
 .container {
