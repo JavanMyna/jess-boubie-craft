@@ -34,6 +34,7 @@ body {
     line-height: 1.6;
     color: var(--color-text);
     background-color: var(--color-bg);
+    overflow-x: hidden; /* safety seal: nothing is allowed to poke out sideways */
 }
 
 
@@ -61,6 +62,7 @@ header, footer {
     align-items: center;
     justify-content: center;
     gap: 1rem;
+    flex-wrap: wrap; /* logo and title can stack if the screen is too narrow */
 }
 
 .logo {
@@ -87,6 +89,7 @@ header, footer {
     align-items: center;
     gap: 1rem;
     margin-top: 1.5rem;
+    position: relative; /* creates a coordinate system for the absolute arrow buttons */
 }
 
 /* THE WINDOW — the only element allowed to clip content */
@@ -296,10 +299,12 @@ header, footer {
     width: 2.5rem;
     height: 2.5rem;
     font-size: 1.5rem;
+    line-height: 1;              /* remove extra line-height so the glyph hugs its own box */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translateY(-0.05em); /* tiny upward nudge to center the × visually */
     z-index: 10;
 }
 
@@ -409,6 +414,7 @@ header, footer {
     display: flex;
     gap: 2rem;
     list-style: none;   /* kill the default bullet points — this is a nav, not a bulleted list */
+    flex-wrap: wrap;    /* links step onto a new row instead of forcing a scrollbar */
 }
 
 .shortcut-nav a {
@@ -525,4 +531,39 @@ section {
 
 .product-card img {
     aspect-ratio: 4 / 3;
+}
+
+/* ============================================= */
+/* BATCH 1 MOBILE OVERRIDES                      */
+/* ============================================= */
+@media (max-width: 700px) {
+    .shortcut-nav ul {
+        gap: 0.75rem;
+    }
+    .shortcut-nav a {
+        padding: 0.75rem 0.4rem;
+        font-size: 0.95rem;
+    }
+
+    /* Arrows float over the card edges so the card can be almost full-width */
+    .slider {
+        gap: 0; /* buttons are absolute, so flex gap is irrelevant here */
+    }
+    .slider-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 1rem;
+        z-index: 5; /* sit above the card image */
+    }
+    .slider-prev { left: 0.25rem; }
+    .slider-next { right: 0.25rem; }
+
+    /* Bigger logo on small screens */
+    .logo {
+        width: 70px;
+        height: 70px;
+    }
 }
