@@ -223,6 +223,11 @@ header, footer {
     display: block;
 }
 
+/* Any image that opens the lightbox gets the zoom-in cursor */
+.lightbox-trigger {
+    cursor: zoom-in;
+}
+
 .product-card h3,
 .product-card .price,
 .product-card .lore {
@@ -396,4 +401,55 @@ section {
                                     open DevTools, inspect .shortcut-nav,
                                     check its actual height, adjust this
                                     number to match exactly */
+}
+
+/* ============================================= */
+/* GALLERY SECTION                               */
+/* ============================================= */
+#gallery {
+    padding: 4rem 2rem;
+    background-color: var(--color-bg);
+}
+
+#gallery h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--color-primary);
+}
+
+.gallery-subsection {
+    margin-bottom: 3rem;
+}
+
+.gallery-subsection:last-child {
+    margin-bottom: 0;
+}
+
+.gallery-subsection h3 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: block;
+}
+
+/* Mobile: single column */
+@media (max-width: 700px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
 }

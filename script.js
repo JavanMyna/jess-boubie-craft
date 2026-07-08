@@ -1,11 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
-    // Find every product image on the page
-    // Attach a click "handler" to each one
-    document.querySelector('#catalogue').addEventListener('click', (e) => {
-        const img = e.target.closest('.product-card img');
-        if (!img) return;
+
+    /* ONE listener on the whole page. Any click that bubbles up from
+       an element with class="lightbox-trigger" (product cards, gallery,
+       future sections) gets handled here.
+       
+       Python analogy: this is like a single @app.route('/') handler
+       that checks request.path inside the function, instead of
+       registering a separate route for every single URL. */
+    document.body.addEventListener('click', (e) => {
+        const img = e.target.closest('.lightbox-trigger');
+        if (!img) return;   // guard clause: wrong target, ignore
+
         lightboxImg.src = img.src;
         lightboxImg.alt = img.alt;
         lightbox.classList.remove('hidden');
