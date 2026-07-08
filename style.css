@@ -165,12 +165,12 @@ header, footer {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #ccc;
+    background: #5a5a5a;
     cursor: pointer;
 }
 
 .dot.active {
-    background: var(--color-primary);
+    background: #fff;
 }
 
 
@@ -178,7 +178,21 @@ header, footer {
 /* 3. THE CATALOGUE GRID — the important part */
 /* ============================================= */
 #catalogue {
-    padding: 2rem;
+    padding: 4rem 2rem; /* was 2rem — more breathing room now that there's a full photo behind the cards */
+
+    background-image:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url('images/JBC_suzen.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* optional parallax — delete this one line if it feels janky when you test on your phone */
+}
+
+/* Scoped to just the h2 inside #catalogue's container, so we don't
+   accidentally whiten text inside the cards too — same "don't let one
+   fix leak into unrelated elements" principle as before. */
+#catalogue .container > h2 {
+    color: #fff;
 }
 
 .container {
@@ -259,10 +273,6 @@ header, footer {
     padding: 2rem 0;
 }
 
-.story-block {
-    margin-bottom: 2rem;
-}
-
 .contact-list {
     display: flex;
     gap: 1rem;
@@ -296,7 +306,7 @@ header, footer {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .story-text {
@@ -306,19 +316,25 @@ header, footer {
 .story-images {
     flex: 1 1 250px;
     display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap; /* Add this */
+    justify-content: center;
 }
 
 .story-images figure {
-    flex: 1 1 200px; /* slightly smaller so two fit side-by-side */
+    /* flex: 0 1 320px  —  grow:0 is the key change. It tells this
+       figure "don't expand just because you're the only child with
+       no sibling competing for space." Cap it at a natural 320px
+       instead of ballooning to fill the whole row. */
+    flex: 0 1 320px;
     margin: 0;
 }
 
 .story-images img {
     width: 100%;
-    height: 200px;
+    height: 380px;          /* taller box → far less has to be cropped to fill it */
     object-fit: cover;
+    object-position: top;   /* anchor the crop to the TOP edge instead of
+                                dead-center — keeps the head/shoulders in
+                                frame instead of slicing through the middle */
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     display: block;
