@@ -47,7 +47,7 @@ body {
 }
 
 /* ============================================= */
-/* 2. HEADER & FOOTER */
+/* 3. HEADER & FOOTER */
 /* ============================================= */
 header, footer {
     text-align: center;
@@ -71,7 +71,7 @@ header, footer {
 }
 
 /* ============================================= */
-/* 3. THE CATALOGUE SLIDER */
+/* 4. THE CATALOGUE SLIDER */
 /* ============================================= */
 
 /* Fewer cards on small screens. Same idea as an if/else branch in Python —
@@ -106,6 +106,10 @@ header, footer {
 }
 
 .product-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     /* flex: <grow> <shrink> <basis>
        0 0 = "don't grow, don't shrink, just be exactly this width."
        The width is calculated so exactly --cards-per-view cards fit
@@ -184,7 +188,7 @@ header, footer {
 }
 
 /* ============================================= */
-/* 3. THE CATALOGUE GRID — the important part */
+/* 5. THE CATALOGUE GRID — the important part */
 /* ============================================= */
 #catalogue {
     padding: 4rem 2rem; /* was 2rem — more breathing room now that there's a full photo behind the cards */
@@ -216,13 +220,6 @@ header, footer {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 2rem;
-}
-
-.product-card {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .product-card img {
@@ -284,8 +281,29 @@ header, footer {
     border-radius: 8px;
 }
 
+.lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.lightbox-close:hover {
+    background: #fff;
+}
+
 /* ============================================= */
-/* 4. ABOUT SECTION */
+/* 6. ABOUT SECTION */
 /* ============================================= */
 #about {
     padding: 2rem 0;

@@ -1,42 +1,68 @@
 document.addEventListener('DOMContentLoaded', () => {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.querySelector('.lightbox-close');
+    let lastFocusedElement = null;
 
-    /* ONE listener on the whole page. Any click that bubbles up from
-       an element with class="lightbox-trigger" (product cards, gallery,
-       future sections) gets handled here.
-       
-       Python analogy: this is like a single @app.route('/') handler
-       that checks request.path inside the function, instead of
-       registering a separate route for every single URL. */
+    // Open lightbox
     document.body.addEventListener('click', (e) => {
         const img = e.target.closest('.lightbox-trigger');
-        if (!img) return;   // guard clause: wrong target, ignore
+        if (!img) return;
 
+        lastFocusedElement = img;
         lightboxImg.src = img.src;
         lightboxImg.alt = img.alt;
         lightbox.classList.remove('hidden');
+        document.body.setAttribute('aria-hidden', 'true');
+        lightbox.removeAttribute('aria-hidden');
+        lightboxImg.focus();
     });
 
-    // Clicking anywhere on the dark overlay closes it
+    // Close lightbox (click overlay or close button)
     lightbox.addEventListener('click', (e) => {
-        if (!e.target.closest('#lightbox-img')) {
-            lightbox.classList.add('hidden');
-        }
+        if (e.target.closest('#lightbox-img')) return;
+        closeLightbox();
     });
 
-    // Close on Escape key
+    // Close lightbox (Escape key) + trap Tab focus inside while open
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
-            lightbox.classList.add('hidden');
+        if (lightbox.classList.contains('hidden')) return;
+
+        if (e.key === 'Escape') {
+            closeLightbox();
+            return;
+        }
+
+        if (e.key === 'Tab') {
+            const focusable = lightbox.querySelectorAll('button, [href], img[tabindex]');
+            if (focusable.length === 0) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
         }
     });
 
+    function closeLightbox() {
+        lightbox.classList.add('hidden');
+        lightbox.setAttribute('aria-hidden', 'false');
+        lightbox.setAttribute('aria-hidden', 'true');
+        if (lastFocusedElement) lastFocusedElement.focus();
+    }
+
+    // Slider logic (unchanged from your working V1)
     function initSlider(wrapperEl) {
-        const track      = wrapperEl.querySelector('.product-grid');
-        const prevBtn    = wrapperEl.querySelector('.slider-prev');
-        const nextBtn    = wrapperEl.querySelector('.slider-next');
-        const dotsContainer = wrapperEl.querySelector('.dots');   // NEW
+        const track = wrapperEl.querySelector('.product-grid');
+        const prevBtn = wrapperEl.querySelector('.slider-prev');
+        const nextBtn = wrapperEl.querySelector('.slider-next');
+        const dotsContainer = wrapperEl.querySelector('.dots');
 
         const cards = Array.from(track.children);
         const totalCards = cards.length;
@@ -47,37 +73,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return parseInt(raw, 10) || 1;
         }
 
-        let currentIndex = 0;   // the ONE shared state, now used by buttons AND dots
+        let currentIndex = 0;
 
         function maxIndex() {
             return Math.max(0, totalCards - getCardsPerView());
         }
 
-        // NEW — builds the dots fresh. Called once at startup, and again on
-        // resize (since cardsPerView, and therefore dot count, can change).
         function createDots() {
-            dotsContainer.innerHTML = '';   // wipe any previous set first
-
-            const dotCount = maxIndex() + 1;   // <-- the formula we just derived
-
+            dotsContainer.innerHTML = '';
+            const dotCount = maxIndex() + 1;
             for (let i = 0; i < dotCount; i++) {
                 const dot = document.createElement('button');
                 dot.type = 'button';
                 dot.className = 'dot';
                 dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-
-                // `let i` (not `var i`) matters here: each loop iteration gets
-                // its OWN copy of i, so this closure "remembers" the right
-                // value per dot. With `var`, all dots would wrongly jump to
-                // the same final index — a classic JS gotcha you just avoided
-                // by using `let`.
                 dot.addEventListener('click', () => goTo(i));
-
                 dotsContainer.appendChild(dot);
             }
         }
 
-        // NEW — paints which dot is "active" to match currentIndex
         function updateDots() {
             const dots = dotsContainer.querySelectorAll('.dot');
             dots.forEach((dot, i) => {
@@ -86,17 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function update() {
-            if (cards.length === 0) return;   // guard: empty grid, nothing to animate
+            if (cards.length === 0) return;
             const cardWidth = cards[0].getBoundingClientRect().width;
             const gap = parseFloat(getComputedStyle(track).gap) || 0;
             const step = cardWidth + gap;
 
             track.style.transform = `translateX(${-(currentIndex * step)}px)`;
-
             prevBtn.disabled = currentIndex === 0;
             nextBtn.disabled = currentIndex >= maxIndex();
-
-            updateDots();   // NEW — keep dots synced every time position changes
+            updateDots();
         }
 
         function move(direction) {
@@ -104,8 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
             update();
         }
 
-        // NEW — jump directly to a position (what dot-clicks need, vs. move()'s
-        // relative ±1 step)
         function goTo(index) {
             currentIndex = Math.min(Math.max(index, 0), maxIndex());
             update();
@@ -119,19 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
                 createDots();
-                update();
-            }, 150); // 150ms is the sweet spot
+                goTo(currentIndex);
+            }, 150);
         });
 
-        createDots();   // build dots once on load
-        update();       // then set initial positions/states
+        createDots();
+        update();
     }
 
     document.querySelectorAll('.slider-wrapper').forEach(initSlider);
-    // When opening
-    document.body.setAttribute('aria-hidden', 'true');
-    lightbox.removeAttribute('aria-hidden');
-    lightboxImg.focus(); // or a close button
-
-    // When closing (reverse)
-    });
+});
