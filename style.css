@@ -462,3 +462,23 @@ section {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================= */
+/* TEXT SIZE FIXES                               */
+/* ============================================= */
+.lore {
+    font-size: 1rem;   /* was 0.9rem — too small in serif */
+}
+
+.story-text {
+    line-height: 1.7;  /* more breathing room for long paragraphs */
+}
+
+.story-text p {
+    font-size: 1.05rem;  /* slightly larger than default body text */
+    margin-bottom: 1rem;   /* clear separation between paragraphs */
+}
+
+.story-text p:last-child {
+    margin-bottom: 0;  /* no trailing gap after final paragraph */
+}
