@@ -51,18 +51,82 @@ header, footer {
 }
 
 /* ============================================= */
+/* 3. THE CATALOGUE SLIDER */
+/* ============================================= */
+
+:root {
+    --cards-per-view: 3;   /* how many product cards are visible at once */
+    --card-gap: 1.5rem;    /* space between cards */
+}
+
+/* Fewer cards on small screens. Same idea as an if/else branch in Python —
+   CSS's version of "if screen_width <= 700: cards_per_view = 1" */
+@media (max-width: 700px) {
+    :root {
+        --cards-per-view: 1;
+    }
+}
+
+.slider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* THE WINDOW — the only element allowed to clip content */
+.slider-viewport {
+    overflow: hidden;
+    flex: 1;   /* fill all space between the two buttons */
+}
+
+/* THE CONVEYOR BELT — every card sits in one long horizontal row now */
+.product-grid {
+    display: flex;
+    gap: var(--card-gap);
+    transition: transform 0.4s ease;
+    /* We animate `transform`, not `margin-left` or `left`. Transform is
+       handled by the GPU and doesn't force the browser to recalculate
+       page layout on every frame — it's just cheaper. */
+}
+
+.product-card {
+    /* flex: <grow> <shrink> <basis>
+       0 0 = "don't grow, don't shrink, just be exactly this width."
+       The width is calculated so exactly --cards-per-view cards fit
+       per "page", accounting for the gaps between them. */
+    flex: 0 0 calc(
+        (100% - (var(--cards-per-view) - 1) * var(--card-gap)) / var(--cards-per-view)
+    );
+}
+
+.slider-btn {
+    flex-shrink: 0;   /* never let the buttons get squeezed by the cards */
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.slider-btn:hover {
+    background: var(--color-primary-hover);
+}
+
+/* Styling for when JS disables a button at the start/end of the list */
+.slider-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ============================================= */
 /* 3. THE CATALOGUE GRID — the important part */
 /* ============================================= */
 #catalogue {
     padding: 2rem;
-}
-
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    padding: 0;
-    margin-top: 1.5rem;
 }
 
 .container {
