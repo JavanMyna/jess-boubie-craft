@@ -36,6 +36,24 @@
         <p>Handcrafted brass jewelry, rooted in Dusun tradition.</p>
     </header>
 
+<!-- A <nav> tag, not a <div>. Semantic HTML matters here: screen readers
+     and browsers specifically recognize <nav> as "a block of navigation
+     links," the same way Python's type system lets you write
+     isinstance(x, NavigationBlock) instead of just checking
+     "is this div shaped like navigation." It's a signal, not just a box. -->
+<nav class="shortcut-nav">
+    <ul>
+        <!-- Each href="#id" targets an element's id attribute elsewhere
+             on the page. Python analogy: think of id="catalogue" as a
+             dict key, and href="#catalogue" as doing dict['catalogue']
+             to jump straight to that value — the browser does an O(1)
+             lookup by id, no searching required. -->
+        <li><a href="#catalogue">Our Products</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#about">About Us</a></li>
+    </ul>
+</nav>
+
     <main>
 
         <!-- ============================================= -->

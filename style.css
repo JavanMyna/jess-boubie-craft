@@ -346,3 +346,46 @@ header, footer {
     color: #555;
     text-align: center;
 }
+
+/* ============================================= */
+/* SHORTCUT NAVIGATION */
+/* ============================================= */
+.shortcut-nav {
+    position: sticky;
+    top: 0;        /* "stick" once its top edge reaches the very top of the viewport */
+    z-index: 100;  /* stack this ABOVE other content when it starts overlapping
+                      during scroll — without this, a section below it in the
+                      HTML could visually paint over it. Python analogy: think
+                      of z-index like sort priority in a list of overlapping
+                      layers — higher number draws "in front." */
+
+    background-color: var(--color-primary);
+    display: flex;
+    justify-content: center;
+}
+
+.shortcut-nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;   /* kill the default bullet points — this is a nav, not a bulleted list */
+}
+
+.shortcut-nav a {
+    display: block;         /* makes the WHOLE padded box clickable, not just the text glyphs — bigger, easier tap target on mobile */
+    padding: 1rem 0.5rem;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.shortcut-nav a:hover {
+    color: var(--color-accent);
+}
+
+section {
+    scroll-margin-top: 4.5rem;  /* roughly your nav's rendered height —
+                                    open DevTools, inspect .shortcut-nav,
+                                    check its actual height, adjust this
+                                    number to match exactly */
+}
