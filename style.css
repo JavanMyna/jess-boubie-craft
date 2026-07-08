@@ -120,9 +120,9 @@ header, footer {
 }
 
 .slider-btn {
-    flex-shrink: 0;   /* never let the buttons get squeezed by the cards */
-    width: 2.5rem;
-    height: 2.5rem;
+    flex-shrink: 0;
+    width: 3rem;        /* ~48px, above 44px minimum */
+    height: 3rem;
     border-radius: 50%;
     border: none;
     background: var(--color-primary);
@@ -198,7 +198,7 @@ header, footer {
         url('images/JBC_suzen.jpg');
     background-size: cover;
     background-position: center;
-        background-attachment: fixed; /* WARNING: iOS Safari often ignores or breaks this. Delete if janky on mobile (Step 7). */
+    /*background-attachment: fixed; //imma remove it then. WARNING: iOS Safari often ignores or breaks this. Delete if janky on mobile (Step 7). */ 
 }
 
 /* Scoped to just the h2 inside #catalogue's container, so we don't
@@ -481,4 +481,17 @@ section {
 
 .story-text p:last-child {
     margin-bottom: 0;  /* no trailing gap after final paragraph */
+}
+
+/* ============================================= */
+/* MOBILE REFINEMENTS                            */
+/* ============================================= */
+@media (max-width: 700px) {
+    .story-text {
+        padding: 0 0.5rem;   /* small side padding so text doesn't touch screen edge */
+    }
+    
+    #about {
+        padding: 2rem 1rem;  /* slightly reduce from 2rem 0 to give breathing room */
+    }
 }
