@@ -27,6 +27,31 @@ body {
 }
 
 /* ============================================= */
+/* 2. FONT CHANGE */
+/* ============================================= */
+body {
+    /* The comma-separated list is a fallback CHAIN, evaluated left to
+       right. Python analogy: it's like a try/except stack —
+       try: use_font('Cormorant Garamond')
+       except FontNotAvailable: use_font('serif')  # the browser's default
+       If the Google Fonts request ever fails (offline, blocked, etc.),
+       the page doesn't break — it just falls back to a generic serif. */
+    font-family: 'Cormorant Garamond', serif;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+/* Targeting .brand h1 specifically (not all h1s) keeps this scoped —
+   same "separation of concerns" idea you're already using: HTML says
+   WHAT the content is (a heading), CSS says HOW it looks. We didn't
+   touch the HTML at all to make it italic. */
+.brand h1 {
+    font-style: italic;
+    font-weight: 600; /* semibold italic reads nicer than regular-weight italic for a wordmark */
+}
+
+/* ============================================= */
 /* 2. HEADER & FOOTER */
 /* ============================================= */
 header, footer {

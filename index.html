@@ -6,6 +6,25 @@
     <meta name="description" content="Handcrafted brass jewelry by Jess Boubie Craft, rooted in Dusun tradition.">
     <title>Jess Boubie Craft | Artisan Brass Jewelry</title>
     <link rel="stylesheet" href="style.css">
+    <!-- preconnect = open the network handshake (DNS lookup + TLS) to
+         Google's font servers RIGHT NOW, before we even know which font
+         file we need yet. Like opening a socket/connection pool early so
+         it's "warm" by the time you actually need to send a request,
+         instead of paying that setup cost later. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- This is the actual import. Read the query string like unpacking
+         a dict: ital,wght@0,400;0,600;0,700;1,400
+           0,400 -> style=normal, weight=400 (regular)
+           0,600 -> style=normal, weight=600 (semibold)
+           0,700 -> style=normal, weight=700 (bold)
+           1,400 -> style=ITALIC, weight=400
+         We're explicitly requesting 4 separate font FILES, one per
+         combination. display=swap tells the browser: "render text in
+         the fallback font immediately, don't leave it invisible while
+         you wait for the download — swap it in the instant it's ready." -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
