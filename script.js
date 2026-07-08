@@ -31,9 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lightbox.classList.add('hidden');
         }
     });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
     function initSlider(wrapperEl) {
         const track      = wrapperEl.querySelector('.product-grid');
         const prevBtn    = wrapperEl.querySelector('.slider-prev');
@@ -116,9 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
         prevBtn.addEventListener('click', () => move(parseInt(prevBtn.dataset.dir, 10)));
         nextBtn.addEventListener('click', () => move(parseInt(nextBtn.dataset.dir, 10)));
 
+        let resizeTimer;
         window.addEventListener('resize', () => {
-            createDots();   // cardsPerView may have changed → dot count may too
-            update();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                createDots();
+                update();
+            }, 150); // 150ms is the sweet spot
         });
 
         createDots();   // build dots once on load
@@ -126,4 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.querySelectorAll('.slider-wrapper').forEach(initSlider);
+    // When opening
+    document.body.setAttribute('aria-hidden', 'true');
+    lightbox.removeAttribute('aria-hidden');
+    lightboxImg.focus(); // or a close button
+
+    // When closing (reverse)
     });

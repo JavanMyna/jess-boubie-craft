@@ -6,9 +6,10 @@
     --color-accent: #8b5e34;
     --color-bg: #faf7f2;
     --color-text: #2b2b2b;
-    --color-primary-hover: #6b5340; 
+    --color-primary-hover: #6b5340;
+    --cards-per-view: 3;
+    --card-gap: 1.5rem;
 }
-
 html {
     scroll-behavior: smooth;
 }
@@ -72,11 +73,6 @@ header, footer {
 /* ============================================= */
 /* 3. THE CATALOGUE SLIDER */
 /* ============================================= */
-
-:root {
-    --cards-per-view: 3;   /* how many product cards are visible at once */
-    --card-gap: 1.5rem;    /* space between cards */
-}
 
 /* Fewer cards on small screens. Same idea as an if/else branch in Python —
    CSS's version of "if screen_width <= 700: cards_per_view = 1" */
@@ -258,7 +254,7 @@ header, footer {
 
 .lore {
     padding-bottom: 1rem;
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #555;
 }
 
@@ -466,10 +462,6 @@ section {
 /* ============================================= */
 /* TEXT SIZE FIXES                               */
 /* ============================================= */
-.lore {
-    font-size: 1rem;   /* was 0.9rem — too small in serif */
-}
-
 .story-text {
     line-height: 1.7;  /* more breathing room for long paragraphs */
 }
@@ -494,4 +486,20 @@ section {
     #about {
         padding: 2rem 1rem;  /* slightly reduce from 2rem 0 to give breathing room */
     }
+}
+
+/* ============================================= */
+/* FOR MY ALCOHOLIC FRIENDS                            */
+/* ============================================= */
+@media (prefers-reduced-motion: reduce) {
+    .product-grid {
+        transition: none;
+    }
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+.product-card img {
+    aspect-ratio: 4 / 3;
 }
