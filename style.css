@@ -602,3 +602,12 @@ section {
     opacity: 0.8;
     margin-bottom: 0.5rem;
 }
+
+/* ============================================= */
+/* VERSION MARKER                                */
+/* ============================================= */
+.version-note {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    margin-top: 0.25rem;
+}
