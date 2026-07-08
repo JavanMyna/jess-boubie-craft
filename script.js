@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxClose = document.querySelector('.lightbox-close');
+    //const lightboxClose = document.querySelector('.lightbox-close'); a dead code but idk why i added it in the first place
     let lastFocusedElement = null;
 
     // Open lightbox
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImg.alt = img.alt;
         lightbox.classList.remove('hidden');
         document.body.setAttribute('aria-hidden', 'true');
-        lightbox.removeAttribute('aria-hidden');
+        lightbox.setAttribute('aria-hidden', 'false');
         lightboxImg.focus();
     });
 
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeLightbox() {
         lightbox.classList.add('hidden');
-        lightbox.setAttribute('aria-hidden', 'false');
         lightbox.setAttribute('aria-hidden', 'true');
+        document.body.removeAttribute('aria-hidden');
         if (lastFocusedElement) lastFocusedElement.focus();
     }
 
