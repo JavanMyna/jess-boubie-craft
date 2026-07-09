@@ -45,12 +45,13 @@
 }
 
 /*
-    The .story-nav link should visually match the other shortcut-nav links.
-    It inherits everything from .shortcut-nav; we only narrow the gap because
-    there is just one item.
+    The story nav has two items: "Back to Home" and the theme toggle.
+    We keep the centered layout from .shortcut-nav but add a clear gap and
+    vertical alignment so the icon button doesn't look stuck to the link.
 */
 .story-nav ul {
-    gap: 0;
+    gap: 1.5rem;
+    align-items: center;
 }
 
 .story-main {
@@ -269,7 +270,131 @@
 }
 
 /* ============================================= */
-/* 5. OPEN STATE                                 */
+/* 5. PREFACE & CHAPTER STYLING                  */
+/* ============================================= */
+
+/*
+    The preface is the visible "before you read" area the user requested.
+    It sits at the top of the reading view so the first thing a reader sees
+    after opening the book is context and an estimate of reading time, not
+    immediately Chapter 1.
+*/
+.preface {
+    padding: 2rem;
+    margin-bottom: 2rem;
+    background: rgba(139, 94, 52, 0.06);
+    border-radius: 8px;
+    border: 1px solid rgba(139, 94, 52, 0.12);
+    text-align: center;
+}
+
+.preface h2 {
+    font-size: 1.6rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+}
+
+.reading-time {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1.25rem;
+}
+
+.theme-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.theme-list li {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.75rem;
+    background: rgba(139, 94, 52, 0.1);
+    border-radius: 999px;
+    color: var(--color-primary);
+}
+
+/*
+    Each chapter is wrapped in an <article> so the manuscript has clear
+    semantic boundaries. The heading combines the chapter number and the
+    title from the document.
+*/
+.chapter {
+    margin-bottom: 3rem;
+}
+
+.chapter:last-child {
+    margin-bottom: 0;
+}
+
+.chapter-heading {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(139, 94, 52, 0.15);
+    line-height: 1.3;
+}
+
+.chapter-number {
+    display: block;
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.7;
+    margin-bottom: 0.25rem;
+}
+
+.chapter-title {
+    display: block;
+}
+
+/* ============================================= */
+/* 6. THEME TOGGLE                               */
+/* ============================================= */
+
+/*
+    The dark-mode toggle lives in the sticky nav. It is a plain button
+    with an icon; the text label is provided by aria-label for screen
+    readers. The two SVG icons (sun/moon) are toggled by CSS so the icon
+    always matches the current mode.
+*/
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+}
+
+.theme-toggle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* In light mode, show the moon icon (switch to dark). Hide the sun. */
+.icon-sun { display: none; }
+.icon-moon { display: block; }
+
+/* ============================================= */
+/* 7. OPEN STATE                                 */
 /* ============================================= */
 
 /*
@@ -291,7 +416,7 @@
 }
 
 /* ============================================= */
-/* 6. REDUCED MOTION                             */
+/* 8. REDUCED MOTION                             */
 /* ============================================= */
 
 /*
@@ -329,7 +454,7 @@
 }
 
 /* ============================================= */
-/* 7. MOBILE ADJUSTMENTS                         */
+/* 9. MOBILE ADJUSTMENTS                         */
 /* ============================================= */
 
 @media (max-width: 700px) {
@@ -394,3 +519,96 @@
         font-size: 1.25rem;
     }
 }
+
+/* ============================================= */
+/* 10. DARK MODE                                 */
+/* ============================================= */
+
+/*
+    When .dark-mode is on <html>, override the custom properties used across
+    the whole page. Because custom properties inherit down the tree, every
+    element using var(--color-bg), var(--color-text), etc. automatically
+    switches to the dark palette. This keeps the override in one place.
+*/
+html.dark-mode {
+    --color-bg: #1a1612;          /* very dark warm brown */
+    --color-text: #f5f0e6;        /* warm off-white */
+    --color-primary: #3d2e22;     /* dark brown for header/nav/buttons */
+    --color-primary-hover: #4a3a2c;
+    --color-accent: #c9a87c;      /* light brass for links and accents */
+}
+
+/*
+    The book cover is explicitly styled, so we override it directly. In dark
+    mode it looks like dark leather with brass accents instead of a brown
+    cover on a dark page.
+*/
+.dark-mode .book-cover {
+    background: #2d241b;
+    border-color: rgba(201, 168, 124, 0.25);
+    color: var(--color-accent);
+}
+
+.dark-mode .book-cover:hover,
+.dark-mode .book-cover:focus-visible {
+    box-shadow: 0 0 0 4px rgba(201, 168, 124, 0.25);
+}
+
+.dark-mode .book-cover__image {
+    border-color: rgba(201, 168, 124, 0.25);
+}
+
+/*
+    Reading pages in dark mode use a dark sepia background. The left gutter
+    shadow is inverted so it reads as a soft highlight instead of a dark
+    smudge on a dark page.
+*/
+.dark-mode .book-interior {
+    background: #1f1a14;
+    color: var(--color-text);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.dark-mode .book-pages {
+    background:
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 0%, transparent 8%);
+}
+
+/*
+    Preface and chapter headings adapt to the dark palette via the variables,
+    but we give the preface a slightly lighter dark background so it still
+    stands out from the page background.
+*/
+.dark-mode .preface {
+    background: rgba(201, 168, 124, 0.08);
+    border-color: rgba(201, 168, 124, 0.18);
+}
+
+.dark-mode .reading-time {
+    color: #b8b0a3;
+}
+
+.dark-mode .theme-list li {
+    background: rgba(201, 168, 124, 0.12);
+    color: var(--color-text);
+}
+
+.dark-mode .preface h2,
+.dark-mode .chapter-heading {
+    color: var(--color-accent);
+}
+
+.dark-mode .chapter-heading {
+    border-bottom-color: rgba(201, 168, 124, 0.2);
+}
+
+/*
+    In dark mode, show the sun icon (switch to light) and hide the moon.
+*/
+.dark-mode .icon-moon { display: none; }
+.dark-mode .icon-sun { display: block; }
+
+/*
+    Reduced motion still works in dark mode because it only removes
+    transitions; it doesn't conflict with these color overrides.
+*/

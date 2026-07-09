@@ -1,8 +1,7 @@
 /*
-    story.js controls one interaction: opening the book.
-    It is intentionally tiny because the animation itself is driven by CSS.
-    JavaScript only adds/removes the .is-open class and updates ARIA
-    attributes so assistive technologies know the content is now visible.
+    story.js controls two interactions: opening the book and toggling
+    dark mode. It stays small and declarative — the animation itself is
+    driven by CSS, and the theme state is mostly a class on <html>.
 */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cover = document.getElementById('bookCover');
     const interior = document.getElementById('bookInterior');
     const pages = document.getElementById('bookPages');
+    const themeToggle = document.getElementById('themeToggle');
 
     /*
         Detect the user's motion preference. matchMedia returns a live
@@ -22,6 +22,34 @@ document.addEventListener('DOMContentLoaded', () => {
         that isn't happening.
     */
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /*
+        THEME TOGGLE
+        The inline script in the <head> may have already set .dark-mode on
+        <html> based on localStorage or OS preference. Here we just make the
+        button reflect that initial state and respond to clicks.
+    */
+    function updateToggleState() {
+        const isDark = document.documentElement.classList.contains('dark-mode');
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+        themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark-mode');
+        try {
+            localStorage.setItem('jbc-theme', isDark ? 'dark' : 'light');
+        } catch (e) {
+            // If localStorage is unavailable, the toggle still works for the
+            // current session; it just won't persist across page loads.
+        }
+        updateToggleState();
+    }
+
+    if (themeToggle) {
+        updateToggleState();
+        themeToggle.addEventListener('click', toggleTheme);
+    }
 
     function openBook() {
         // Guard against double activation (e.g. rapid clicks or a keyboard

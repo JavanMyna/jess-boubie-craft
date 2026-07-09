@@ -27,6 +27,31 @@
     -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="story.css">
+
+    <!--
+        Theme check runs before the page paints so users don't see a flash of
+        light mode when their saved preference (or OS setting) is dark. It
+        adds the .dark-mode class to <html> immediately; story.css then uses
+        that class to override the color variables. The preference is stored
+        only in the browser's localStorage — no server, no cookies, no
+        tracking.
+    -->
+    <script>
+        (function () {
+            try {
+                const saved = localStorage.getItem('jbc-theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (saved === 'dark' || (!saved && prefersDark)) {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            } catch (e) {
+                // If localStorage is blocked (rare), fall back to OS preference only.
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            }
+        })();
+    </script>
 </head>
 <body class="story-page">
 
@@ -39,6 +64,22 @@
     <nav class="shortcut-nav story-nav" aria-label="Story page navigation">
         <ul>
             <li><a href="index.html">← Back to Home</a></li>
+            <!--
+                Theme toggle. aria-pressed tells screen readers whether the
+                button is currently "on" (dark mode active). The SVG icons
+                are swapped visually by CSS based on the .dark-mode class.
+            -->
+            <li>
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+                    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </li>
         </ul>
     </nav>
 
@@ -49,11 +90,9 @@
 
     <main class="story-main">
         <!--
-            STAGE 1 TEMPLATE NOTE:
-            Everything inside .book-interior is placeholder text. It will be
-            replaced verbatim with the real autobiography in the final
-            content-swap stage. Do not treat these paragraphs as real
-            biographical copy.
+            The .book-interior now contains the real autobiography manuscript
+            from EFFREY.1.docx, plus a short preface. The text below the
+            preface is copied verbatim and should not be edited for content.
         -->
         <div class="book-stage">
             <!--
@@ -76,9 +115,9 @@
                         visible title and author text already describe what
                         this button does.
                     -->
-                    <img src="images/JBC_jess_working3.jpg" alt="" class="book-cover__image">
-                    <span class="book-cover__title">[Placeholder Title]</span>
-                    <span class="book-cover__author">Jess Boubie Craft</span>
+                    <img src="images/JBC_rungkopiCover.jpg" alt="" class="book-cover__image">
+                    <span class="book-cover__title">Luka Yang Menyembuhkan Luka</span>
+                    <span class="book-cover__author">Effrey Joseph</span>
                     <span class="book-cover__hint">Click or press Enter to open</span>
                 </button>
 
@@ -95,10 +134,670 @@
                         top of the page.
                     -->
                     <div class="book-pages" id="bookPages" tabindex="0">
-                        <p>[PLACEHOLDER PARAGRAPH 1] This is dummy text standing in for the first paragraph of the autobiography. It exists only to test line height, paragraph spacing, and scroll behavior on this page.</p>
-                        <p>[PLACEHOLDER PARAGRAPH 2] Another placeholder paragraph follows the first, so we can see how multiple paragraphs flow down a continuous scrolling page rather than a paginated layout.</p>
-                        <p>[PLACEHOLDER PARAGRAPH 3] A third block of placeholder text sits here to confirm that the reading area remains comfortable as the content grows longer.</p>
-                        <p>[PLACEHOLDER PARAGRAPH 4] This final dummy paragraph is deliberately generic. When the real transcription arrives, these four paragraphs will be removed and replaced verbatim.</p>
+                        <section class="preface">
+                            <h2>Before You Begin</h2>
+                            <p class="reading-time">About 20–25 minutes</p>
+                            <ul class="theme-list">
+                                <li>A child who never rested</li>
+                                <li>Choosing herself and paying the price</li>
+                                <li>Strength of the body</li>
+                                <li>Healing through the hands</li>
+                                <li>A small circle, a full life</li>
+                            </ul>
+                        </section>
+
+                        <article class="chapter" id="chapter-1">
+                            <h2 class="chapter-heading"><span class="chapter-number">1.</span> I GREW UP BEFORE I WAS READY</h2>
+                            <p>I don’t remember when my childhood ended.</p>
+                            <p>There was no ceremony.</p>
+                            <p>No warning.</p>
+                            <p>One day, I was a child.</p>
+                            <p>The next, I was responsible.</p>
+                            <p>I learned how to be quiet before I learned how to be carefree.</p>
+                            <p>I learn how to carry before I learned how to ask.</p>
+                            <p>While other children were being looked after, I was looking after children.</p>
+                            <p>Small hands that needed feeding.</p>
+                            <p>Small voices that needed comfort.</p>
+                            <p>Needs that did not wait for me to grow.</p>
+                            <p>No one called it strength.</p>
+                            <p>They called it duty.</p>
+                            <p>They called it family.</p>
+                            <p>They called it normal.</p>
+                            <p>But something inside me learned a dangerous lesson early on:</p>
+                            <p>That love meant exhaustion.</p>
+                            <p>That being needed meant disappearing.</p>
+                            <p>I didn’t complain.</p>
+                            <p>I didn’t know then that I was allowed to.</p>
+                            <p>When you grow up too early, you don’t realize what you’ve lost.</p>
+                            <p>You just keep moving.</p>
+                            <p>I thought marriage will save me.</p>
+                            <p>I thought if I gave my life to someone else, the weight might finally lift.</p>
+                            <p>Instead, I met the same absence wearing a different face.</p>
+                            <p>The same silence.</p>
+                            <p>The same loneliness.</p>
+                            <p>Only this time, I had children watching me carry it.</p>
+                            <p>Trauma has a cruel way of repeating itself until you are brave enough to name it.</p>
+                            <p>I had three children and a heart that was breaking quietly.</p>
+                            <p>I loved them with everything I had.</p>
+                            <p>I lost myself doing it.</p>
+                            <p>There were days I felt like I was dissolving.</p>
+                            <p>Not loudly.</p>
+                            <p>Not dramatically.</p>
+                            <p>Just… thinning.</p>
+                            <p>I knew something was wrong:</p>
+                            <p>When rest stopped feeling like rest.</p>
+                            <p>When sleep didn’t heal me.</p>
+                            <p>When my thoughts became heavy rooms I didn’t want to enter.</p>
+                            <p>This was not the life I wanted.</p>
+                            <p>And admitting that felt like betrayal.</p>
+                            <p>To my family,</p>
+                            <p>To my children,</p>
+                            <p>To the version of myself that was taught to endure everything.</p>
+                            <p>But staying was killing me slowly.</p>
+                            <p>And leaving meant being judged loudly.</p>
+                            <p>So I chose the quieter pain, the one that let me breathe.</p>
+                            <p>People talk about choosing yourself like it’s glamorous.</p>
+                            <p>Like it’s brave and shiny and applauded.</p>
+                            <p>It wasn’t.</p>
+                            <p>Choosing myself meant being misunderstood.</p>
+                            <p>It meant being blamed.</p>
+                            <p>It meant standing alone while people questioned my character instead of my wounds.</p>
+                            <p>But for the first time in my life,</p>
+                            <p>I listened to the voice inside me instead of silencing it to keep everyone else comfortable.</p>
+                            <p>I didn’t choose an easy life, I chose a true one.</p>
+                            <p>At the time,</p>
+                            <p>I didn’t know where the choice would lead me.</p>
+                            <p>I only knew this;</p>
+                            <p>I could not survive another life that required me to disappear.</p>
+                            <p>So I stepped forward,</p>
+                            <p>Tired,</p>
+                            <p>Afraid,</p>
+                            <p>Uncertain,</p>
+                            <p>Carrying my children,</p>
+                            <p>And whatever was left of myself.</p>
+                            <p>This is not a story about perfection.</p>
+                            <p>This is a story about staying.</p>
+                            <p>Staying alive,</p>
+                            <p>Staying honest,</p>
+                            <p>Staying long enough to discover</p>
+                            <p>That even a woman who was never allowed to be a child</p>
+                            <p>Can still learn how to live.</p>
+                        </article>
+
+                        <article class="chapter" id="chapter-2">
+                            <h2 class="chapter-heading"><span class="chapter-number">2.</span> I THOUGHT MARRIAGE WOULD SAVE ME</h2>
+                            <p>I believed that love would rescue me.</p>
+                            <p>Not the dramatic kind.</p>
+                            <p>Just the kind that would let me rest.</p>
+                            <p>I didn’t marry because I was ready.</p>
+                            <p>I married because I was tired.</p>
+                            <p>Tired of carrying everything alone.</p>
+                            <p>Tired of being the responsible one.</p>
+                            <p>Tired of being strong without consent.</p>
+                            <p>Marriage looked like relief from a distance.</p>
+                            <p>A door out of responsibility.</p>
+                            <p>A promise that someone else would finally stand beside me,</p>
+                            <p>Instead of behind me, watching me struggle.</p>
+                            <p>No one asked why I wanted to leave my old life so badly.</p>
+                            <p>They only congratulated me for choosing a new one.</p>
+                            <p>I didn’t know then that you can change locations</p>
+                            <p>And still bring your wounds with you.</p>
+                            <p>The abandonment didn’t arrive loudly.</p>
+                            <p>It slipped in quietly,</p>
+                            <p>The way it always had.</p>
+                            <p>It was in the silences,</p>
+                            <p>In the absence of support,</p>
+                            <p>In the way my needs became inconvenient.</p>
+                            <p>Different situation,</p>
+                            <p>Same feeling.</p>
+                            <p>Trauma has a memory.</p>
+                            <p>It recognized patterns faster than the mind does.</p>
+                            <p>I tried harder,</p>
+                            <p>Loved deeper,</p>
+                            <p>Shrank myself again.</p>
+                            <p>Because that’s what I had learned love required.</p>
+                            <p>When my children came into my life,</p>
+                            <p>They became my reason to endure everything.</p>
+                            <p>I loved them with devotion that terrified me,</p>
+                            <p>I poured myself into motherhood</p>
+                            <p>Because it felt like the only place I was unquestionably needed.</p>
+                            <p>But love alone does not heal exhaustion.</p>
+                            <p>And sacrifice does not erase pain.</p>
+                            <p>Some nights, when everyone was asleep,</p>
+                            <p>I sat in the dark and wondered</p>
+                            <p>When I stopped recognizing myself.</p>
+                            <p>I wasn’t unhappy all the time.</p>
+                            <p>That’s what made it confusing.</p>
+                            <p>I laughed.</p>
+                            <p>I functioned.</p>
+                            <p>I survived.</p>
+                            <p>But inside, something was unraveling slowly.</p>
+                            <p>I told myself I was lucky.</p>
+                            <p>Others had it worse.</p>
+                            <p>I should be grateful.</p>
+                            <p>That voice, the one that minimizes pain, sounds a lot like wisdom</p>
+                            <p>Until it cost you your sanity.</p>
+                            <p>My body started speaking when my mouth wouldn’t,</p>
+                            <p>Tension,</p>
+                            <p>Restlessness,</p>
+                            <p>A mind that never stopped running.</p>
+                            <p>I began to realize that staying was teaching my kids the same lesson I was taught;</p>
+                            <p>That love means endurance,</p>
+                            <p>That women bend,</p>
+                            <p>That silence is safer than truth.</p>
+                            <p>That realization scared me more than leaving ever could.</p>
+                            <p>Asking for a divorce felt like standing in court without a defense.</p>
+                            <p>People didn’t ask if I was okay.</p>
+                            <p>They asked why I couldn’t try harder.</p>
+                            <p>They didn’t ask what I had endured,</p>
+                            <p>They asked why I was breaking the family.</p>
+                            <p>I carried shame like a second skin.</p>
+                            <p>I carried fear like a shadow.</p>
+                            <p>But beneath it all, there was something else,</p>
+                            <p>Relief.</p>
+                            <p>Not happiness,</p>
+                            <p>Not confidence,</p>
+                            <p>Just the smallest space to breathe.</p>
+                            <p>I didn’t leave because I stopped loving,</p>
+                            <p>I left because I was disappearing.</p>
+                            <p>And this time, I refused to vanish quietly.</p>
+                            <p>I took my children,</p>
+                            <p>I took my fear,</p>
+                            <p>I took whatever courage I could gather.</p>
+                            <p>I walked away without applause,</p>
+                            <p>Without understanding,</p>
+                            <p>Without certainty.</p>
+                            <p>But for the first time in my life,</p>
+                            <p>I walked toward myself.</p>
+                        </article>
+
+                        <article class="chapter" id="chapter-3">
+                            <h2 class="chapter-heading"><span class="chapter-number">3.</span> WORKING UNTIL I DISAPPEARED</h2>
+                            <p>Leaving did not make life easier,</p>
+                            <p>It made it louder.</p>
+                            <p>Suddenly, everything had a price.</p>
+                            <p>Rent,</p>
+                            <p>Food,</p>
+                            <p>School,</p>
+                            <p>Time.</p>
+                            <p>I took any work I could find,</p>
+                            <p>Work that didn’t care how tired I was,</p>
+                            <p>Work that didn’t ask how much I was already carrying.</p>
+                            <p>Some days I worked so hard,</p>
+                            <p>I forgot what I was working toward.</p>
+                            <p>I told myself this was temporary.</p>
+                            <p>That if I just pushed a little longer,</p>
+                            <p>Things would stabilize.</p>
+                            <p>But survival has a way of expanding until it takes over your entire life.</p>
+                            <p>Burnout didn’t announce itself.</p>
+                            <p>It crept in.</p>
+                            <p>I was always exhausted.</p>
+                            <p>Even on days I wasn’t moving.</p>
+                            <p>My body felt heavy.</p>
+                            <p>My thoughts felt brittle.</p>
+                            <p>There was no room for rest,</p>
+                            <p>Because rest didn’t pay the bills.</p>
+                            <p>I learned how to smile while breaking.</p>
+                            <p>How to nod while being judged.</p>
+                            <p>How to swallow anger because I couldn’t afford conflict.</p>
+                            <p>My family didn’t see a woman trying to survive.</p>
+                            <p>They saw a woman who made the wrong choice.</p>
+                            <p>They asked why I couldn’t endure more.</p>
+                            <p>Why I couldn’t think of the children first.</p>
+                            <p>Why I chose hardship over ‘’stability’’.</p>
+                            <p>They didn’t ask how much of myself I had already lost.</p>
+                            <p>When you grow up being responsible for everyone,</p>
+                            <p>People forget you are allowed to need help too.</p>
+                            <p>There were nights I lay awake</p>
+                            <p>Calculating how many hours of sleep I could sacrifice without falling apart the next day.</p>
+                            <p>I worried constantly.</p>
+                            <p>About money,</p>
+                            <p>About my children,</p>
+                            <p>About whether I had ruined everything.</p>
+                            <p>But even in the middle of exhaustion,</p>
+                            <p>There was something different this time.</p>
+                            <p>I wasn’t numb.</p>
+                            <p>I was afraid but I was present.</p>
+                            <p>I began to understand something painful and freeing.</p>
+                            <p>Not everyone wants you to heal.</p>
+                            <p>Some people prefer the version of you that stayed silent</p>
+                            <p>And carried everything.</p>
+                            <p>I watched people disappear from my life the moment things stopped being easy.</p>
+                            <p>No messages.</p>
+                            <p>No check-ins.</p>
+                            <p>No questions.</p>
+                            <p>Their absence hurt.</p>
+                            <p>But it also clarified things.</p>
+                            <p>I didn’t have the luxury of collapsing.</p>
+                            <p>I had three children watching me learn how to stand.</p>
+                            <p>So I kept going.</p>
+                            <p>Not because I was strong</p>
+                            <p>But because stopping wasn’t an option.</p>
+                            <p>I didn’t know it then,</p>
+                            <p>But this was the chapter where endurance slowly began to transform into intention.</p>
+                            <p>Where survival started asking a question;</p>
+                            <p>What if there is more than this?</p>
+                        </article>
+
+                        <article class="chapter" id="chapter-4">
+                            <h2 class="chapter-heading"><span class="chapter-number">4.</span> I STARTED RUNNING WITHOUT KNOWING WHY</h2>
+                            <p>I didn’t start running because I loved it.</p>
+                            <p>I started running because I needed somewhere to put the restlessness.</p>
+                            <p>My mind never stopped.</p>
+                            <p>Even when my body was still,</p>
+                            <p>My thoughts were already sprinting ahead,</p>
+                            <p>Worrying,</p>
+                            <p>Replaying,</p>
+                            <p>Preparing for impact.</p>
+                            <p>Running gave the noise a direction.</p>
+                            <p>At first, I only ran short distances.</p>
+                            <p>My lungs burned.</p>
+                            <p>My legs protested.</p>
+                            <p>My body reminded me that I was not an athlete.</p>
+                            <p>But I wasn’t trying to become one.</p>
+                            <p>I was trying to survive my own head.</p>
+                            <p>Ten years ago today, I signed up for my very first marathon.</p>
+                            <p>Not because I believed I could finish it,</p>
+                            <p>But because I needed to prove something to myself.</p>
+                            <p>Every step felt like a negotiation.</p>
+                            <p>With pain.</p>
+                            <p>With doubt.</p>
+                            <p>With the voice that told me I should stop.</p>
+                            <p>I didn’t stop.</p>
+                            <p>Crossing the finish line didn’t feel like victory.</p>
+                            <p>It felt like relief.</p>
+                            <p>For the first time in a long while,</p>
+                            <p>I had evidence</p>
+                            <p>That I could endure something</p>
+                            <p>And come out the other side intact.</p>
+                            <p>I kept signing up for races,</p>
+                            <p>One after another.</p>
+                            <p>Marathons became my language,</p>
+                            <p>A way to say I’m still here,</p>
+                            <p>Without explaining anything.</p>
+                            <p>People began to notice.</p>
+                            <p>They called me disciplined.</p>
+                            <p>Strong.</p>
+                            <p>Inspiring.</p>
+                            <p>I nodded and smiled.</p>
+                            <p>But inside I know the truth.</p>
+                            <p>I was running away from silence.</p>
+                            <p>Eventually, I pushed further.</p>
+                            <p>Longer distances.</p>
+                            <p>Harder terrains.</p>
+                            <p>Ultra marathons taught me what exhaustion really meant.</p>
+                            <p>They stripped everything unnecessary away</p>
+                            <p>Until only breath,</p>
+                            <p>Movement,</p>
+                            <p>And will remained.</p>
+                            <p>I ran across Asia,</p>
+                            <p>Different countries,</p>
+                            <p>Different landscapes,</p>
+                            <p>The same questions followed me everywhere.</p>
+                            <p>How far is far enough?</p>
+                            <p>How long can you outrun yourself?</p>
+                            <p>Four years into running,</p>
+                            <p>My body was stronger than it had ever been.</p>
+                            <p>My mind was not.</p>
+                            <p>The races stopped giving me peace.</p>
+                            <p>The finish lines felt emptier.</p>
+                            <p>Running had saved me once.</p>
+                            <p>But it was no longer enough.</p>
+                            <p>I had mistaken endurance for healing.</p>
+                            <p>And for the first time,</p>
+                            <p>I allowed myself to admit it.</p>
+                            <p>I wasn’t searching for strength anymore.</p>
+                            <p>I was searching for stillness.</p>
+                            <p>I didn’t quit running.</p>
+                            <p>I just stopped expecting it to fix me.</p>
+                            <p>Something else was waiting.</p>
+                            <p>I didn’t know it yet.</p>
+                            <p>But life has a way of guiding you</p>
+                            <p>To the exact place your healing needs to begin,</p>
+                            <p>Even when you arrived by accident.</p>
+                            <p>Next in real life came the moment where everything went quiet.</p>
+                        </article>
+
+                        <article class="chapter" id="chapter-5">
+                            <h2 class="chapter-heading"><span class="chapter-number">5.</span> THE DAY THE NOISE STOPPED</h2>
+                            <p>I didn’t find copper.</p>
+                            <p>I stumbled into it.</p>
+                            <p>In 2018,</p>
+                            <p>During a moment of scrolling without intention,</p>
+                            <p>I came across a local page.</p>
+                            <p>An artisan.</p>
+                            <p>Copper works.</p>
+                            <p>Hands shaping metal into something alive.</p>
+                            <p>I didn’t know why I stopped.</p>
+                            <p>I just did.</p>
+                            <p>Something in me leaned closer.</p>
+                            <p>I reached out to him without a plan.</p>
+                            <p>Without confidence.</p>
+                            <p>Just curiosity wrapped in courage.</p>
+                            <p>He said no.</p>
+                            <p>He wasn’t taking trainees.</p>
+                            <p>He didn’t have the time.</p>
+                            <p>The space.</p>
+                            <p>The capacity.</p>
+                            <p>I understood.</p>
+                            <p>Or at least I pretended to.</p>
+                            <p>But something wouldn’t let me walk away.</p>
+                            <p>So I kept asking questions.</p>
+                            <p>About copper.</p>
+                            <p>About tools.</p>
+                            <p>About process.</p>
+                            <p>I didn’t ask to be taken again.</p>
+                            <p>I asked to learn.</p>
+                            <p>Weeks passed.</p>
+                            <p>Then months.</p>
+                            <p>Three months of persistence,</p>
+                            <p>Quiet, respectful, unwavering.</p>
+                            <p>One day he invited me to his studio.</p>
+                            <p>The first time I stepped inside,</p>
+                            <p>it smelled like heat and history.</p>
+                            <p>Copper lay waiting,</p>
+                            <p>Raw, unshaped, honest.</p>
+                            <p>He handed me a hammer.</p>
+                            <p>When metal meets metal, it makes a sound that can’t be ignored.</p>
+                            <p>The moment I struck copper for the first time,</p>
+                            <p>Something extraordinary happened.</p>
+                            <p>The noise in my head stopped.</p>
+                            <p>No racing thoughts.</p>
+                            <p>No rehearsed worries.</p>
+                            <p>No echoes of judgment.</p>
+                            <p>Just rhythm.</p>
+                            <p>Pressure.</p>
+                            <p>Presence.</p>
+                            <p>I didn’t cry,</p>
+                            <p>I didn’t smile.</p>
+                            <p>I breathed.</p>
+                            <p>I didn’t realize how loud my mind had been</p>
+                            <p>Until it finally went silent.</p>
+                            <p>Working with copper demanded everything from me,</p>
+                            <p>My hands,</p>
+                            <p>My attention,</p>
+                            <p>My patience.</p>
+                            <p>There was no space to dissociate.</p>
+                            <p>No room to escape.</p>
+                            <p>Only now.</p>
+                            <p>Only here.</p>
+                            <p>Copper didn’t care about my past.</p>
+                            <p>It responded only to intention.</p>
+                            <p>Too much force, it resisted.</p>
+                            <p>Too little, it remained unchanged.</p>
+                            <p>I learned to listen.</p>
+                            <p>To adjust.</p>
+                            <p>To respect the material</p>
+                            <p>Instead of trying to dominate it.</p>
+                            <p>In ways I couldn’t yet explain,</p>
+                            <p>Copper was teaching me how to treat myself.</p>
+                            <p>I didn’t know then that I was stepping into something rare.</p>
+                            <p>Bornean copper bracelets carry history.</p>
+                            <p>They are not trends.</p>
+                            <p>They are lineage.</p>
+                            <p>At that time, there were only five makers left in the state.</p>
+                            <p>I became the only woman among them.</p>
+                            <p>Not because I set out to be different,</p>
+                            <p>But because I stayed.</p>
+                            <p>Copper became my therapy.</p>
+                            <p>My meditation.</p>
+                            <p>My anchor.</p>
+                            <p>I didn’t need to run anymore to feel strong.</p>
+                            <p>I didn’t need to prove anything.</p>
+                            <p>For the first time,</p>
+                            <p>My hands were doing the healing my mind could not.</p>
+                            <p>I started making jewelry with intention.</p>
+                            <p>Every piece carried a story.</p>
+                            <p>Not always mine,</p>
+                            <p>But always human.</p>
+                            <p>Pain.</p>
+                            <p>Survival.</p>
+                            <p>Hope.</p>
+                            <p>Quiet strength.</p>
+                            <p>Love.</p>
+                            <p>I posted them online,</p>
+                            <p>Along with the stories behind them.</p>
+                            <p>And people began to respond.</p>
+                            <p>They bought my work.</p>
+                            <p>At first, I wondered if it was pity.</p>
+                            <p>If they felt sorry for me.</p>
+                            <p>That thought lingered longer than I’d like to admit.</p>
+                            <p>But over time, I learned something important;</p>
+                            <p>People weren’t buying my pain.</p>
+                            <p>They were recognizing their own.</p>
+                            <p>Copper gave them permission to feel.</p>
+                            <p>And in doing so,</p>
+                            <p>It was giving me permission to heal.</p>
+                            <p>Not completely,</p>
+                            <p>Not neatly,</p>
+                            <p>But honestly.</p>
+                            <p>I was no longer running away.</p>
+                            <p>I was finally standing still.</p>
+                        </article>
+
+                        <article class="chapter" id="chapter-6">
+                            <h2 class="chapter-heading"><span class="chapter-number">6.</span> WHEN PEOPLE SHOW THEIR TRUE COLOUR</h2>
+                            <p>Loss doesn’t always come from death.</p>
+                            <p>Sometimes it comes from silence.</p>
+                            <p>I noticed it slowly.</p>
+                            <p>The way messages stopped arriving.</p>
+                            <p>The way concern faded once my struggle stopped being temporary.</p>
+                            <p>People are generous when hope looks quick.</p>
+                            <p>They are quiet when it doesn’t.</p>
+                            <p>When life was hard but still familiar,</p>
+                            <p>They stayed.</p>
+                            <p>When it became inconvenient,</p>
+                            <p>They disappeared.</p>
+                            <p>No one tells you this part.</p>
+                            <p>That choosing yourself may cost you</p>
+                            <p>The very people who praised your strength.</p>
+                            <p>They liked me better when I was enduring quietly.</p>
+                            <p>When I needed nothing.</p>
+                            <p>When I didn’t disrupt the image they had of me.</p>
+                            <p>But survival made me honest.</p>
+                            <p>And honesty made them uncomfortable.</p>
+                            <p>I didn’t announce my pain.</p>
+                            <p>I didn’t beg for understanding.</p>
+                            <p>I just noticed who stopped seeing me.</p>
+                            <p>Who looked away.</p>
+                            <p>Who changed the subject.</p>
+                            <p>Who pretended not to notice</p>
+                            <p>That I was holding my life together with effort and will.</p>
+                            <p>That hurt more than I expected.</p>
+                            <p>Not because I needed everyone,</p>
+                            <p>But because I had once believed they would stay.</p>
+                            <p>There is a special kind of grief</p>
+                            <p>In realizing your presence was conditional.</p>
+                            <p>That you were loved only when you were manageable.</p>
+                            <p>Only when your strength benefited others.</p>
+                            <p>At first, I blamed myself.</p>
+                            <p>Maybe I asked for too much.</p>
+                            <p>Maybe I expected too much.</p>
+                            <p>Maybe I should have been quieter.</p>
+                            <p>But healing has a way of sharpening your vision.</p>
+                            <p>I began to see that some people weren’t leaving because I changed,</p>
+                            <p>They were leaving because I stopped carrying them too.</p>
+                            <p>Letting go wasn’t dramatic.</p>
+                            <p>It was necessary.</p>
+                            <p>I stopped explaining myself.</p>
+                            <p>Stopped justifying my choices.</p>
+                            <p>Stopped shrinking to make others comfortable.</p>
+                            <p>I didn’t burn bridges.</p>
+                            <p>I simply stopped crossing them alone.</p>
+                            <p>My circle became smaller.</p>
+                            <p>Painfully small at times.</p>
+                            <p>But something unexpected happened in the quiet.</p>
+                            <p>The people who remained,</p>
+                            <p>They stayed without needing me to perform strength.</p>
+                            <p>They listened without fixing.</p>
+                            <p>They respected my boundaries.</p>
+                            <p>They saw me, not just my endurance.</p>
+                            <p>A small circle doesn’t mean a lonely life.</p>
+                            <p>It means a life without constant defense.</p>
+                            <p>I learned that peace often arrives</p>
+                            <p>Only after you remove what keeps disturbing it.</p>
+                            <p>I didn’t lose everyone.</p>
+                            <p>I lost the wrong one.</p>
+                            <p>And in that loss,</p>
+                            <p>I gained space.</p>
+                            <p>Space to breathe,</p>
+                            <p>Space to heal.</p>
+                            <p>Space to become someone who no longer apologizes for surviving.</p>
+                            <p>This chapter is not about bitterness.</p>
+                            <p>It’s about clarity.</p>
+                            <p>About learning that not everyone who walks with you is meant to walk with you through everything.</p>
+                            <p>And that is not failure.</p>
+                            <p>That is wisdom earned the hard way.</p>
+                        </article>
+
+                        <article class="chapter" id="chapter-7">
+                            <h2 class="chapter-heading"><span class="chapter-number">7.</span> EVERY PIECE HOLDS A STORY</h2>
+                            <p>When people started buying my work,</p>
+                            <p>I didn’t celebrate right away.</p>
+                            <p>I questioned it.</p>
+                            <p>I wondered what they were really paying for.</p>
+                            <p>Was it the copper?</p>
+                            <p>The craftsmanship?</p>
+                            <p>Or the story attached to it?</p>
+                            <p>There were moments I feared my pain had become a product.</p>
+                            <p>That people were supporting me out of sympathy,</p>
+                            <p>Not respect.</p>
+                            <p>That thought sat heavy in my chest.</p>
+                            <p>Each bracelet took time.</p>
+                            <p>Heat.</p>
+                            <p>Attention.</p>
+                            <p>Copper does not rush.</p>
+                            <p>It remembers every mistake.</p>
+                            <p>I worked slowly.</p>
+                            <p>Intentionally.</p>
+                            <p>I let the metal guide me instead of forcing it to obey.</p>
+                            <p>In every curve,</p>
+                            <p>Every strike,</p>
+                            <p>Every polished edge,</p>
+                            <p>There was intention.</p>
+                            <p>And always, a story.</p>
+                            <p>Not always mine.</p>
+                            <p>Sometimes borrowed from conversations.</p>
+                            <p>Sometimes shaped by listening.</p>
+                            <p>Sometimes formed from silence.</p>
+                            <p>I began sharing those stories online.</p>
+                            <p>Not dramatically.</p>
+                            <p>Not for attention.</p>
+                            <p>Just truth.</p>
+                            <p>About endurance.</p>
+                            <p>About starting late.</p>
+                            <p>About surviving things no one applauds.</p>
+                            <p>I didn’t embellish.</p>
+                            <p>I didn’t clean it up.</p>
+                            <p>I spoke the way I lived,</p>
+                            <p>Quietly,</p>
+                            <p>Honestly,</p>
+                            <p>Without asking permission.</p>
+                            <p>Something unexpected happened.</p>
+                            <p>People didn’t turn away.</p>
+                            <p>They leaned in.</p>
+                            <p>Messages arrived from women I had never met.</p>
+                            <p>Mothers,</p>
+                            <p>Daughters,</p>
+                            <p>Survivors.</p>
+                            <p>They told me they saw themselves in the metal,</p>
+                            <p>In the marks,</p>
+                            <p>In the imperfections that made each piece real.</p>
+                            <p>That’s when I understood.</p>
+                            <p>They weren’t buying my pain.</p>
+                            <p>They were recognizing their own.</p>
+                            <p>Copper carries memory.</p>
+                            <p>It darkens with time.</p>
+                            <p>It changes by touch.</p>
+                            <p>Just like people.</p>
+                            <p>No two pieces are ever identical.</p>
+                            <p>And that is their value.</p>
+                            <p>Perfection has no soul.</p>
+                            <p>But survival does.</p>
+                            <p>Being one of the remaining makers in the state was an honor I didn’t take lightly.</p>
+                            <p>Being the only woman among them was not something I announced.</p>
+                            <p>I let my work speak.</p>
+                            <p>I stayed.</p>
+                            <p>I learned.</p>
+                            <p>I respected the crafts.</p>
+                            <p>And slowly, I earned my place.</p>
+                            <p>This work didn’t erase my past.</p>
+                            <p>It didn’t heal everything magically.</p>
+                            <p>But it gave me something I had never had before;</p>
+                            <p>A way to exist without explaining myself,</p>
+                            <p>A way to be seen without being exposed,</p>
+                            <p>A way to turn survival into meaning.</p>
+                            <p>I was no longer asking,</p>
+                            <p>Am I enough?</p>
+                            <p>I was answering it,</p>
+                            <p>With my hands.</p>
+                        </article>
+
+                        <article class="chapter" id="chapter-8">
+                            <h2 class="chapter-heading"><span class="chapter-number">8.</span> HEALING IS NOT A FINISH LINE</h2>
+                            <p>I used to think healing would feel like arrival.</p>
+                            <p>Like crossing a line and finally being done.</p>
+                            <p>It doesn’t.</p>
+                            <p>Healing is quieter than that.</p>
+                            <p>Less dramatic.</p>
+                            <p>More honest.</p>
+                            <p>Some days, I wake up grounded and steady.</p>
+                            <p>Other days, the past taps me in the shoulder without warning.</p>
+                            <p>I don’t panic anymore when it happens.</p>
+                            <p>I don’t shame myself for not being over it.</p>
+                            <p>I have learned this truth the hard way;</p>
+                            <p>Healing is not about erasing what happened.</p>
+                            <p>It is about no longer letting it decide who you are.</p>
+                            <p>There are parts of my childhood that still aches.</p>
+                            <p>Moments I wish had been softer.</p>
+                            <p>Hands I wish had held me instead of needing me.</p>
+                            <p>That pain didn’t disappear.</p>
+                            <p>But it no longer runs my life.</p>
+                            <p>I don’t measure success the way I used to.</p>
+                            <p>Not by applause.</p>
+                            <p>Not by titles.</p>
+                            <p>Not by how strong I look to others.</p>
+                            <p>Success, to me, looks like this:</p>
+                            <p>Waking up without dread,</p>
+                            <p>Working with my hands in peace,</p>
+                            <p>Coming home knowing I choose us, honestly.</p>
+                            <p>It looks like boundaries.</p>
+                            <p>Like rest without guilt.</p>
+                            <p>Like a life that doesn’t require me to disappear.</p>
+                            <p>My circle is small now.</p>
+                            <p>Not because I failed to keep people,</p>
+                            <p>But because I finally learned how to keep myself.</p>
+                            <p>The people who remain see me when I am quiet,</p>
+                            <p>Not just when I am capable.</p>
+                            <p>That is enough.</p>
+                            <p>Copper still teaches me.</p>
+                            <p>It reminds me that pressure can shape without destroying.</p>
+                            <p>That softness and strength are not opposites.</p>
+                            <p>That time change everything and that change is not loss.</p>
+                            <p>Every craft I make carries a reminder;</p>
+                            <p>We are allowed to become.</p>
+                            <p>If you’re reading this and standing at the edge of your own decision, afraid to choose yourself, I want you to know something;</p>
+                            <p>You don’t have to be fearless.</p>
+                            <p>You don’t have to be healed.</p>
+                            <p>You don’t even have to know where you’re going.</p>
+                            <p>You just have to stop abandoning yourself.</p>
+                            <p>Choosing yourself may cost you approval.</p>
+                            <p>It may cost you comfort.</p>
+                            <p>It may cost you people who only loved you when you were convenient.</p>
+                            <p>But it will give you something irreplaceable;</p>
+                            <p>A life that belongs to you.</p>
+                            <p>I am not a woman who had it easy.</p>
+                            <p>I am a woman who stayed.</p>
+                            <p>Stayed alive.</p>
+                            <p>Stayed honest.</p>
+                            <p>Stayed long enough to find peace in places I never expected.</p>
+                            <p>And if I can stand here,</p>
+                            <p>Still healing,</p>
+                            <p>Still learning,</p>
+                            <p>Still breathing,</p>
+                            <p>Then maybe you can too.</p>
+                        </article>
+
                     </div>
                 </div>
             </div>
