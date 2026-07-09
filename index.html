@@ -53,7 +53,7 @@
 
     <header>
         <div class="brand">
-            <img src="images/JBC_logo.jpg" alt="Jess Boubie Craft logo" width="50" height="50" class="logo">
+            <img src="images/JBC_logo.jpg" alt="Jess Boubie Craft logo" width="80" height="80" class="logo lightbox-trigger">
             <h1>Jess Boubie Craft</h1>
         </div>
         <p>Handcrafted brass jewelry, rooted in Dusun tradition.</p>
@@ -231,11 +231,29 @@
                         </div>
                 </article>
                 <section class="contact-block">
-                    <h3>Get in Touch</h3> 
-                    <ul class="contact-list">
-                        <li><a href="https://wa.me/60178580427" target="_blank" rel="noopener">WhatsApp Us</a></li>
-                        <li><a href="https://instagram.com/JessBoubie_Craft" target="_blank" rel="noopener">Follow on Instagram</a></li>
-                    </ul>
+                    <div class="contact-card">
+                        <h3>Get in Touch</h3>
+                        <p class="contact-lead">We'd love to hear from you. Reach out for orders, questions, or just to say hello.</p>
+                        <ul class="contact-list">
+                            <li>
+                                <a href="https://wa.me/60178580427" target="_blank" rel="noopener">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12c0 2.116.553 4.09 1.523 5.812L0 24l6.354-1.666A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm6.64 16.88c-.27.76-1.55 1.43-2.17 1.52-.58.08-1.15.27-3.84-.8-3.25-1.27-5.34-4.5-5.5-4.71-.16-.21-1.31-1.74-1.31-3.32 0-1.58.82-2.35 1.12-2.68.3-.32.66-.4.88-.4.22 0 .44 0 .63.01.2 0 .47-.08.74.56.27.65.92 2.26 1 2.42.08.16.14.35.03.56-.11.21-.16.34-.32.53-.16.18-.33.38-.47.51-.16.15-.32.31-.14.62.18.31.8 1.32 1.72 2.13 1.18 1.06 2.45 1.47 2.78 1.63.33.16.52.13.71-.08.19-.21.82-.96 1.04-1.29.22-.33.44-.28.73-.17.3.11 1.92.9 2.25 1.07.33.16.55.25.63.39.08.14.08.8-.19 1.36z"/></svg>
+                                    WhatsApp
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://instagram.com/JessBoubie_Craft" target="_blank" rel="noopener">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Instagram
+                                </a>
+                            </li>
+                        </ul>
+                        <p class="contact-phone">Or call: <a href="tel:+60178580427">+60 17-858 0427</a></p>
+                    </div>
                 </section>
             </div>
 
@@ -251,7 +269,12 @@
     </footer>
 
     <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Image preview">
-        <button class="lightbox-close" aria-label="Close image preview">&times;</button>
+        <button class="lightbox-close" aria-label="Close image preview">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+                <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+        </button>
         <img id="lightbox-img" alt="" tabindex="-1">
     </div>
 
