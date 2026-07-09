@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cover = document.getElementById('bookCover');
     const interior = document.getElementById('bookInterior');
     const pages = document.getElementById('bookPages');
+    const bookClose = document.getElementById('bookClose');
     const themeToggle = document.getElementById('themeToggle');
 
     /*
@@ -103,6 +104,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function closeBook() {
+        // Guard against closing an already-closed book.
+        if (!book.classList.contains('is-open')) return;
+
+        book.classList.remove('is-open');
+
+        // Restore the cover's natural keyboard behavior and accessibility.
+        cover.removeAttribute('aria-disabled');
+        cover.removeAttribute('aria-hidden');
+        cover.removeAttribute('tabindex');
+
+        // Hide the interior from assistive tech while the cover closes.
+        interior.setAttribute('aria-hidden', 'true');
+
+        if (prefersReducedMotion) {
+            cover.focus({ preventScroll: true });
+        } else {
+            // Wait for the cover to finish swinging shut before moving focus
+            // back, so screen readers don't announce hidden content.
+            cover.addEventListener('transitionend', () => {
+                cover.focus({ preventScroll: true });
+            }, { once: true });
+        }
+    }
+
     /*
         We attach a single click listener to the cover button. Because the
         cover is a real <button>, the browser automatically translates
@@ -111,4 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
         instead of a <div>: we get keyboard accessibility for free.
     */
     cover.addEventListener('click', openBook);
+
+    if (bookClose) {
+        bookClose.addEventListener('click', closeBook);
+    }
 });

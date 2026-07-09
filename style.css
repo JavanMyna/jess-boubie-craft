@@ -9,6 +9,12 @@
     --color-primary-hover: #6b5340;
     --cards-per-view: 3;
     --card-gap: 1.5rem;
+
+    /* Typography scale: h1 > h2 > h3 > h4 for consistent hierarchy */
+    --text-h1: 2rem;
+    --text-h2: 1.75rem;
+    --text-h3: 1.5rem;
+    --text-h4: 1.25rem;
 }
 html {
     scroll-behavior: smooth;
@@ -22,6 +28,24 @@ html {
 
 img {
     max-width: 100%;
+}
+
+/* Visually hidden until focused; first tab stop for keyboard users */
+.skip-link {
+    position: absolute;
+    top: -3rem;
+    left: 0;
+    background: var(--color-primary);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    z-index: 1001;
+    text-decoration: none;
+    font-weight: 600;
+    transition: top 0.2s;
+}
+
+.skip-link:focus {
+    top: 0;
 }
 
 /* ============================================= */
@@ -49,6 +73,7 @@ body {
 .brand h1 {
     font-style: italic;
     font-weight: 600; /* semibold italic reads nicer than regular-weight italic for a wordmark */
+    font-size: var(--text-h1);
 }
 
 /* ============================================= */
@@ -79,14 +104,6 @@ header, footer {
 /* ============================================= */
 /* 4. THE CATALOGUE SLIDER */
 /* ============================================= */
-
-/* Fewer cards on small screens. Same idea as an if/else branch in Python —
-   CSS's version of "if screen_width <= 700: cards_per_view = 1" */
-@media (max-width: 700px) {
-    :root {
-        --cards-per-view: 1;
-    }
-}
 
 .slider {
     display: flex;
@@ -222,6 +239,7 @@ header, footer {
    accidentally whiten text inside the cards too — same "don't let one
    fix leak into unrelated elements" principle as before. */
 #catalogue h2 {
+    font-size: var(--text-h2);
     color: #fff;
 }
 
@@ -243,6 +261,7 @@ header, footer {
     width: 100%;
     height: 220px;
     object-fit: cover;
+    aspect-ratio: 4 / 3;
     display: block;
 }
 
@@ -258,6 +277,7 @@ header, footer {
 }
 
 .product-card h3 {
+    font-size: var(--text-h4);
     margin-top: 0.75rem;
 }
 
@@ -338,6 +358,13 @@ header, footer {
     padding: 2rem 0;
 }
 
+#about h2 {
+    font-size: var(--text-h2);
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--color-primary);
+}
+
 .contact-block {
     margin-top: 3rem;
     padding: 0 1rem;
@@ -355,7 +382,7 @@ header, footer {
 }
 
 .contact-card h3 {
-    font-size: 2rem;
+    font-size: var(--text-h3);
     color: var(--color-primary);
     margin-bottom: 0.5rem;
 }
@@ -524,6 +551,7 @@ section {
 
 #gallery h2 {
     text-align: center;
+    font-size: var(--text-h2);
     margin-bottom: 2rem;
     color: var(--color-primary);
 }
@@ -537,7 +565,7 @@ section {
 }
 
 .gallery-subsection h3 {
-    font-size: 1.5rem;
+    font-size: var(--text-h3);
     color: var(--color-primary);
     margin-bottom: 1rem;
     text-align: center;
@@ -558,13 +586,6 @@ section {
     display: block;
 }
 
-/* Mobile: single column */
-@media (max-width: 700px) {
-    .gallery-grid {
-        grid-template-columns: minmax(0, 1fr);
-    }
-}
-
 /* ============================================= */
 /* TEXT SIZE FIXES                               */
 /* ============================================= */
@@ -582,20 +603,7 @@ section {
 }
 
 /* ============================================= */
-/* MOBILE REFINEMENTS                            */
-/* ============================================= */
-@media (max-width: 700px) {
-    .story-text {
-        padding: 0 0.5rem;   /* small side padding so text doesn't touch screen edge */
-    }
-    
-    #about {
-        padding: 2rem 1rem;  /* slightly reduce from 2rem 0 to give breathing room */
-    }
-}
-
-/* ============================================= */
-/* FOR MY ALCOHOLIC FRIENDS                            */
+/* REDUCED MOTION PREFERENCES                    */
 /* ============================================= */
 @media (prefers-reduced-motion: reduce) {
     .product-grid {
@@ -606,14 +614,14 @@ section {
     }
 }
 
-.product-card img {
-    aspect-ratio: 4 / 3;
-}
-
 /* ============================================= */
-/* BATCH 1 + 2 MOBILE OVERRIDES                  */
+/* MOBILE OVERRIDES                              */
 /* ============================================= */
 @media (max-width: 700px) {
+    :root {
+        --cards-per-view: 1;
+    }
+
     .shortcut-nav ul {
         gap: 0.75rem;
     }
@@ -630,13 +638,13 @@ section {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        width: 1.75rem;
-        height: 1.75rem;
-        font-size: 0.95rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.85rem;
         z-index: 5;
     }
-    .slider-prev { left: -1.75rem; }
-    .slider-next { right: -1.75rem; }
+    .slider-prev { left: -1.25rem; }
+    .slider-next { right: -1.25rem; }
 
     /* Bigger logo on small screens */
     .logo {
@@ -649,6 +657,18 @@ section {
         background: rgba(255, 255, 255, 0.85);
         -webkit-backdrop-filter: blur(6px);
         backdrop-filter: blur(6px);
+    }
+
+    .gallery-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .story-text {
+        padding: 0 0.5rem;   /* small side padding so text doesn't touch screen edge */
+    }
+
+    #about {
+        padding: 2rem 1rem;  /* slightly reduce from 2rem 0 to give breathing room */
     }
 }
 

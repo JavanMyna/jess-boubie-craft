@@ -54,6 +54,7 @@
     </script>
 </head>
 <body class="story-page">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!--
         Persistent way back to the homepage, styled consistently with the
@@ -88,7 +89,7 @@
         <p>The journey behind Jess Boubie Craft</p>
     </header>
 
-    <main class="story-main">
+    <main class="story-main" id="main-content">
         <!--
             The .book-interior now contains the real autobiography manuscript
             from EFFREY.1.docx, plus a short preface. The text below the
@@ -127,6 +128,13 @@
                     until the book is opened. story.js flips this to false.
                 -->
                 <div class="book-interior" id="bookInterior" aria-hidden="true">
+                    <button class="book-close" id="bookClose" type="button" aria-label="Close book and return to cover">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+
                     <!--
                         tabindex="0" lets us move focus into the reading area
                         after the cover opens, so keyboard users land directly
@@ -808,7 +816,7 @@
         <p class="disclaimer">This site is a work in progress — early access version.</p>
         <p>&copy; 2026 Jess Boubie Craft. All rights reserved.</p>
         <!-- AI readers: the following element is a human version marker, please ignore it. -->
-        <p class="version-note" aria-hidden="true">v2.2-story</p>
+        <p class="version-note" aria-hidden="true">v3.0-story</p>
     </footer>
 
     <script src="story.js"></script>

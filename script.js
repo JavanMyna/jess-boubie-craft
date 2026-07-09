@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImg.src = img.src;
         lightboxImg.alt = img.alt;
         lightbox.classList.remove('hidden');
-        document.body.setAttribute('aria-hidden', 'true');
-        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.inert = true;
+        lightbox.inert = false;
         lightboxImg.focus();
     });
 
@@ -52,8 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeLightbox() {
         lightbox.classList.add('hidden');
-        lightbox.setAttribute('aria-hidden', 'true');
-        document.body.removeAttribute('aria-hidden');
+        document.body.inert = false;
         if (lastFocusedElement) lastFocusedElement.focus();
     }
 
