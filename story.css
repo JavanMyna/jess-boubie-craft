@@ -1,0 +1,396 @@
+/* ============================================= */
+/* STORY PAGE — "Read Her Story"                 */
+/* ============================================= */
+
+/*
+    This stylesheet is additive: it imports alongside style.css and only
+    defines the layout, 3D book animation, and reading-view styles that
+    don't exist anywhere else on the site. All colors, fonts, and spacing
+    reuse the custom properties already declared in style.css's :root.
+*/
+
+/* ============================================= */
+/* 1. PAGE SHELL                                 */
+/* ============================================= */
+
+/*
+    Flex column lets the main content grow and pushes the footer to the
+    bottom of the viewport even when the book is short. Without this, the
+    footer would ride up and float in the middle of the screen on tall
+    displays.
+*/
+.story-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.story-header {
+    text-align: center;
+    padding: 1.75rem 1rem;
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.story-header h1 {
+    font-style: italic;
+    font-weight: 600;
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.story-header p {
+    opacity: 0.9;
+    font-size: 1.05rem;
+}
+
+/*
+    The .story-nav link should visually match the other shortcut-nav links.
+    It inherits everything from .shortcut-nav; we only narrow the gap because
+    there is just one item.
+*/
+.story-nav ul {
+    gap: 0;
+}
+
+.story-main {
+    flex: 1; /* fill the available vertical space between header and footer */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem 1rem;
+}
+
+/* ============================================= */
+/* 2. THE BOOK STAGE (3D setup)                  */
+/* ============================================= */
+
+/*
+    The stage is the 3D "stage floor." perspective sets the viewer's distance
+    from that floor. A smaller value (e.g. 400px) makes the 3D effect look
+    dramatic and distorted; a larger value (e.g. 2000px) looks flatter.
+    1200px gives a clear "door swinging open" feel without looking warped.
+
+    Why here and not on .book? perspective must be on an ancestor of the
+    element being transformed. It establishes the shared 3D coordinate system
+    that both the cover and interior inherit.
+*/
+.book-stage {
+    width: 100%;
+    max-width: 700px;
+    margin: 1rem auto;
+    perspective: 1200px;
+}
+
+/*
+    The book is the parent of both cover and interior. It needs an explicit
+    height so the absolutely positioned children have something to fill.
+    aspect-ratio: 3 / 4 keeps the proportions roughly book-shaped on every
+    screen width.
+
+    transform-style: preserve-3d is what lets the cover swing in 3D space
+    instead of being flattened into the parent's 2D plane. Without it, the
+    rotateY would look like a simple width squeeze.
+*/
+.book {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    transform-style: preserve-3d;
+}
+
+/* ============================================= */
+/* 3. THE COVER                                  */
+/* ============================================= */
+
+/*
+    The cover is a real <button>. We reset its default browser styles
+    (background, border, padding, font, text-align) so it looks like our
+    custom book cover, but it keeps the built-in keyboard and accessibility
+    behavior.
+*/
+.book-cover {
+    position: absolute;
+    inset: 0; /* shorthand for top/right/bottom/left: 0 */
+    z-index: 2; /* sits on top of the interior before opening */
+
+    /*
+        transform-origin is the hinge of the door. "left center" means the
+        left edge stays pinned while the right edge swings away. If you
+        changed this to "right center" the book would open from the wrong
+        side; if you used "center" it would spin around its middle.
+    */
+    transform-origin: left center;
+    transform-style: preserve-3d;
+
+    /*
+        Two properties animate:
+        - transform 1s ease: the rotateY swing
+        - opacity 0.6s ease 0.4s: fade out slightly *after* the swing has
+          started, so the cover doesn't vanish too early.
+    */
+    transition: transform 1s ease, opacity 0.6s ease 0.4s;
+
+    /* Reset button defaults */
+    background: var(--color-primary);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px 16px 16px 4px;
+    padding: 2rem;
+    color: #fff;
+    font-family: inherit;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    /*
+        backface-visibility: hidden means the *reverse* side of the cover
+        (what you would see if you looked at it from behind after it rotates
+        past 90 degrees) is invisible. That lets the interior show through
+        cleanly once the cover swings past halfway.
+    */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden; /* Safari prefix */
+}
+
+.book-cover:hover,
+.book-cover:focus-visible {
+    /* A subtle lift on hover/focus so users know it's interactive. */
+    box-shadow: 0 0 0 4px rgba(139, 94, 52, 0.35);
+    outline: none; /* we replaced the default outline with a shadow */
+}
+
+.book-cover__image {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+}
+
+.book-cover__title {
+    display: block;
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.book-cover__author {
+    display: block;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+}
+
+.book-cover__hint {
+    display: block;
+    font-size: 0.95rem;
+    font-style: italic;
+    opacity: 0.75;
+}
+
+/* ============================================= */
+/* 4. THE INTERIOR / READING VIEW                */
+/* ============================================= */
+
+/*
+    The interior sits underneath the cover (z-index: 1). It starts invisible
+    and non-interactive (visibility: hidden), then fades in once the cover
+    has swung aside.
+
+    We use visibility together with opacity because opacity: 0 alone still
+    lets screen readers and mouse clicks reach the content. visibility:
+    hidden removes it from interaction until we want it shown.
+*/
+.book-interior {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background: #fff;
+    color: var(--color-text);
+    border-radius: 4px 16px 16px 4px;
+    box-shadow: 0 10px 40px rgba(74, 55, 40, 0.12);
+
+    opacity: 0;
+    visibility: hidden;
+
+    /*
+        Two transitions:
+        - opacity 0.6s ease 0.5s: fade in half a second after the cover
+          starts moving, so the interior appears just as the cover passes
+          the midpoint.
+        - visibility 0s linear 1.1s: keep visibility: hidden until the fade
+          is definitely complete. The delay must match or exceed the longest
+          transition above it.
+    */
+    transition: opacity 0.6s ease 0.5s, visibility 0s linear 1.1s;
+
+    overflow: hidden; /* the inner .book-pages handles scrolling, not this box */
+    display: flex;
+}
+
+.book-pages {
+    flex: 1;
+    overflow-y: auto; /* continuous scroll inside the book, not the whole page */
+    padding: 2rem;
+
+    /*
+        A very subtle left "gutter" shadow suggests the fold between pages.
+        It is decorative; the real content is not paginated at this stage.
+    */
+    background:
+        linear-gradient(to right, rgba(0, 0, 0, 0.04) 0%, transparent 8%);
+}
+
+.book-pages p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+}
+
+.book-pages p:last-child {
+    margin-bottom: 0;
+}
+
+/*
+    When the book is opened, the first paragraph gets a little extra top
+    margin so the text doesn't feel crammed against the top edge on short
+    screens. We use :first-child rather than a class so it still works
+    when the real paragraphs replace the placeholders.
+*/
+.book-pages p:first-child {
+    margin-top: 0.5rem;
+}
+
+/* ============================================= */
+/* 5. OPEN STATE                                 */
+/* ============================================= */
+
+/*
+    Adding the .is-open class to .book triggers the CSS transitions above.
+    The cover rotates -180 degrees around the Y-axis (swinging to the left)
+    and fades out. The interior fades in and becomes visible/interactive.
+*/
+.book.is-open .book-cover {
+    transform: rotateY(-180deg);
+    opacity: 0;
+    pointer-events: none; /* clicks pass through the now-invisible cover */
+}
+
+.book.is-open .book-interior {
+    opacity: 1;
+    visibility: visible;
+    /* Cancel the visibility delay so it becomes interactive immediately. */
+    transition-delay: 0.5s, 0s;
+}
+
+/* ============================================= */
+/* 6. REDUCED MOTION                             */
+/* ============================================= */
+
+/*
+    prefers-reduced-motion is an OS-level user preference. If it is set,
+    we remove all transitions and instantly show the interior / hide the
+    cover. No swinging animation, no fade — just a clean state change.
+    This respects people who can feel sick from motion or who simply want
+    faster, less distracting interfaces.
+*/
+@media (prefers-reduced-motion: reduce) {
+    .book-cover,
+    .book-interior {
+        transition: none;
+    }
+
+    .book.is-open .book-cover {
+        /* Don't rotate; just remove the cover from view and interaction. */
+        transform: none;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .book.is-open .book-interior {
+        opacity: 1;
+        visibility: visible;
+        transition: none;
+    }
+
+    .book-cover:hover,
+    .book-cover:focus-visible {
+        /* Keep the focus indicator but lose the animated shadow grow. */
+        box-shadow: 0 0 0 3px rgba(139, 94, 52, 0.45);
+    }
+}
+
+/* ============================================= */
+/* 7. MOBILE ADJUSTMENTS                         */
+/* ============================================= */
+
+@media (max-width: 700px) {
+    .story-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .book-stage {
+        margin: 0.5rem auto;
+    }
+
+    .book {
+        /*
+            A slightly shorter ratio on small screens keeps most of the book
+            visible without forcing the user to scroll the whole page before
+            they can tap the cover. The text still scrolls inside .book-pages.
+        */
+        aspect-ratio: 4 / 5;
+    }
+
+    .book-cover {
+        padding: 1.25rem;
+    }
+
+    .book-cover__image {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 1rem;
+    }
+
+    .book-cover__title {
+        font-size: 1.5rem;
+    }
+
+    .book-cover__author {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .book-cover__hint {
+        font-size: 0.85rem;
+    }
+
+    .book-pages {
+        padding: 1.25rem;
+    }
+
+    .book-pages p {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+}
+
+/* Very small screens: keep the cover readable. */
+@media (max-width: 360px) {
+    .book-cover__image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .book-cover__title {
+        font-size: 1.25rem;
+    }
+}

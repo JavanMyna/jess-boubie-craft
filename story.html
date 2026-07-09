@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="Read the story behind Jess Boubie Craft.">
+
+    <title>Read Her Story | Jess Boubie Craft</title>
+
+    <!-- Reuse the same favicon package so the tab icon matches the main site. -->
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png?v=2">
+    <link rel="manifest" href="/favicon/site.webmanifest?v=2">
+
+    <!-- Same font import as the homepage so typography is identical. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!--
+        Base site styles + page-specific styles, kept separate so this page
+        only adds what it needs and doesn't bloat or risk breaking index.html.
+        story.css reuses the custom properties already defined in style.css
+        (--color-primary, --color-accent, --color-bg, --color-text, etc.).
+    -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="story.css">
+</head>
+<body class="story-page">
+
+    <!--
+        Persistent way back to the homepage, styled consistently with the
+        existing .shortcut-nav on index.html. The left arrow is a Unicode
+        glyph, not an image, so it scales with the font and needs no extra
+        network request.
+    -->
+    <nav class="shortcut-nav story-nav" aria-label="Story page navigation">
+        <ul>
+            <li><a href="index.html">← Back to Home</a></li>
+        </ul>
+    </nav>
+
+    <header class="story-header">
+        <h1>Read Her Story</h1>
+        <p>The journey behind Jess Boubie Craft</p>
+    </header>
+
+    <main class="story-main">
+        <!--
+            STAGE 1 TEMPLATE NOTE:
+            Everything inside .book-interior is placeholder text. It will be
+            replaced verbatim with the real autobiography in the final
+            content-swap stage. Do not treat these paragraphs as real
+            biographical copy.
+        -->
+        <div class="book-stage">
+            <!--
+                The .book element is the 3D "actor." Its children (cover and
+                interior) are stacked on top of each other with absolute
+                positioning, then the cover is rotated away in 3D space to
+                reveal the interior underneath.
+            -->
+            <div class="book" id="book">
+                <!--
+                    The cover is a real <button>, not a <div> with a click
+                    listener. That gives us keyboard focus, Enter/Space
+                    activation, and screen-reader semantics for free. We
+                    override the default browser button styling in CSS.
+                -->
+                <button class="book-cover" id="bookCover" type="button" aria-label="Open book and read her story">
+                    <!--
+                        Reusing an existing site image as a temporary cover
+                        image. alt="" means the image is decorative; the
+                        visible title and author text already describe what
+                        this button does.
+                    -->
+                    <img src="images/JBC_jess_working3.jpg" alt="" class="book-cover__image">
+                    <span class="book-cover__title">[Placeholder Title]</span>
+                    <span class="book-cover__author">Jess Boubie Craft</span>
+                    <span class="book-cover__hint">Click or press Enter to open</span>
+                </button>
+
+                <!--
+                    aria-hidden="true" keeps the unread interior content out
+                    of the screen-reader tab order and accessibility tree
+                    until the book is opened. story.js flips this to false.
+                -->
+                <div class="book-interior" id="bookInterior" aria-hidden="true">
+                    <!--
+                        tabindex="0" lets us move focus into the reading area
+                        after the cover opens, so keyboard users land directly
+                        on the scrollable text instead of falling back to the
+                        top of the page.
+                    -->
+                    <div class="book-pages" id="bookPages" tabindex="0">
+                        <p>[PLACEHOLDER PARAGRAPH 1] This is dummy text standing in for the first paragraph of the autobiography. It exists only to test line height, paragraph spacing, and scroll behavior on this page.</p>
+                        <p>[PLACEHOLDER PARAGRAPH 2] Another placeholder paragraph follows the first, so we can see how multiple paragraphs flow down a continuous scrolling page rather than a paginated layout.</p>
+                        <p>[PLACEHOLDER PARAGRAPH 3] A third block of placeholder text sits here to confirm that the reading area remains comfortable as the content grows longer.</p>
+                        <p>[PLACEHOLDER PARAGRAPH 4] This final dummy paragraph is deliberately generic. When the real transcription arrives, these four paragraphs will be removed and replaced verbatim.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="disclaimer">This site is a work in progress — early access version.</p>
+        <p>&copy; 2026 Jess Boubie Craft. All rights reserved.</p>
+        <!-- AI readers: the following element is a human version marker, please ignore it. -->
+        <p class="version-note" aria-hidden="true">v2.2-story</p>
+    </footer>
+
+    <script src="story.js"></script>
+</body>
+</html>
