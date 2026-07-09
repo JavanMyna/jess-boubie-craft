@@ -13,8 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImg.src = img.src;
         lightboxImg.alt = img.alt;
         lightbox.classList.remove('hidden');
-        document.body.inert = true;
-        lightbox.inert = false;
+        // Inert every direct child of body except the lightbox itself, so
+        // the overlay is the only interactive region while it is open.
+        Array.from(document.body.children).forEach(child => {
+            if (child !== lightbox) child.inert = true;
+        });
         lightboxImg.focus();
     });
 
@@ -52,7 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeLightbox() {
         lightbox.classList.add('hidden');
-        document.body.inert = false;
+        Array.from(document.body.children).forEach(child => {
+            child.inert = false;
+        });
         if (lastFocusedElement) lastFocusedElement.focus();
     }
 
