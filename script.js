@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ─── FEEDBACK FORM URL ───────────────────────────────────────────
+    // One-line swap: paste the real Google Form URL here when it's ready.
+    const FEEDBACK_FORM_URL = 'PASTE_GOOGLE_FORM_URL_HERE';
+    document.querySelectorAll('.feedback-link').forEach(link => {
+        link.href = FEEDBACK_FORM_URL;
+    });
+
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     //const lightboxClose = document.querySelector('.lightbox-close'); a dead code but idk why i added it in the first place
@@ -83,23 +90,52 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, totalCards - getCardsPerView());
         }
 
+        // Each "page" of the carousel shows getCardsPerView() cards, so
+        // the prev/next buttons should jump by that many cards — not by 1.
+        // Otherwise a user who sees 3 cards clicks `>` and only moves one,
+        // which feels broken. We recalculate on every move so viewport
+        // changes (resize, orientation) are reflected immediately.
+        const PAGE_STEP = () => getCardsPerView();
+
+        // Dot positions land on page boundaries: 0, step, 2*step, ...
+        // The final dot is clamped to the last valid leftmost index so
+        // there's always a dot that surfaces the tail end of the row.
+        function pageStarts() {
+            const step = PAGE_STEP();
+            const last = maxIndex();
+            const starts = [];
+            for (let i = 0; i <= last; i += step) {
+                starts.push(Math.min(i, last));
+            }
+            // Guarantee the final page (last valid index) is reachable.
+            if (starts[starts.length - 1] !== last) starts.push(last);
+            return starts;
+        }
+
         function createDots() {
             dotsContainer.innerHTML = '';
-            const dotCount = maxIndex() + 1;
-            for (let i = 0; i < dotCount; i++) {
+            const starts = pageStarts();
+            starts.forEach((_, i) => {
                 const dot = document.createElement('button');
                 dot.type = 'button';
                 dot.className = 'dot';
                 dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-                dot.addEventListener('click', () => goTo(i));
+                dot.addEventListener('click', () => goTo(starts[i]));
                 dotsContainer.appendChild(dot);
-            }
+            });
         }
 
         function updateDots() {
             const dots = dotsContainer.querySelectorAll('.dot');
+            const starts = pageStarts();
+            // Highlight the dot for the page currently in view — i.e. the
+            // page whose start index is the greatest one <= currentIndex.
+            let activeIdx = 0;
+            for (let i = 0; i < starts.length; i++) {
+                if (starts[i] <= currentIndex) activeIdx = i;
+            }
             dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === currentIndex);
+                dot.classList.toggle('active', i === activeIdx);
             });
         }
 
@@ -116,8 +152,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function move(direction) {
-            currentIndex = Math.min(Math.max(currentIndex + direction, 0), maxIndex());
-            update();
+            // Advance by a full page (cards visible at once), not a single
+            // card. direction is +1 (next) or -1 (prev).
+            const step = PAGE_STEP();
+            const starts = pageStarts();
+
+            // Find the current page index, then move to the neighbour page's
+            // start index. This keeps clicks landing on clean page breaks
+            // even after a viewport resize that changed the step size.
+            let currentIdx = 0;
+            for (let i = 0; i < starts.length; i++) {
+                if (starts[i] <= currentIndex) currentIdx = i;
+            }
+            const nextIdx = Math.min(Math.max(currentIdx + direction, 0), starts.length - 1);
+            goTo(starts[nextIdx]);
         }
 
         function goTo(index) {

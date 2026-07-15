@@ -45,13 +45,110 @@
 }
 
 /*
-    The story nav has two items: "Back to Home" and the theme toggle.
-    We keep the centered layout from .shortcut-nav but add a clear gap and
-    vertical alignment so the icon button doesn't look stuck to the link.
+    The story nav holds two clusters: a "Back to Home" link on the left,
+    and the reader-controls cluster (chrome / zen / pages / text size /
+    theme) on the right. Keeping every view/appearance toggle in one
+    place matches the existing dark-mode control so users always know
+    where to look.
 */
+.story-nav {
+    justify-content: space-between;
+    padding: 0 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+
 .story-nav ul {
-    gap: 1.5rem;
     align-items: center;
+    gap: 1.5rem;
+}
+
+.story-nav__primary {
+    flex-wrap: wrap;
+}
+
+/*
+    Reader-controls cluster. Short labeled buttons (not icons alone) so
+    the controls are obvious and not buried, per brief 2d. Tight gap keeps
+    the group reading as a single toolbar.
+*/
+.reader-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.reader-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.reader-btn:hover,
+.reader-btn:focus-visible {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+    outline: none;
+}
+
+/* "On" state for toggle buttons (active mode). */
+.reader-btn[aria-pressed="true"] {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Text-size segmented control */
+.text-size-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    padding: 0.15rem;
+}
+
+.text-size-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0 0.4rem 0 0.5rem;
+}
+
+.text-size-btn {
+    padding: 0.25rem 0.55rem;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: background-color 0.15s;
+}
+
+.text-size-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.text-size-btn.active,
+.text-size-btn[aria-pressed="true"] {
+    background: #fff;
+    color: var(--color-primary);
 }
 
 .story-main {
@@ -548,7 +645,254 @@
 }
 
 /* ============================================= */
-/* 10. DARK MODE                                 */
+/* 10. READER PREFERENCES                        */
+/* ============================================= */
+/*
+    All sections here are ADDITIVE. The default structured/boxed layout
+    defined above is never removed — these classes layer on top of it when
+    the reader chooses a different presentation, and lift cleanly when the
+    choice changes. State is persisted in localStorage (see story.js).
+*/
+
+/* --- 10a. Chrome hide (header + footer) ---------- */
+/*
+    Hiding feels like decluttering, not deleting: a simple display:none
+    with no transform/scroll jump. The story-nav remains sticky so the
+    reader can always toggle chrome back on.
+*/
+.chrome-hidden .story-header,
+.chrome-hidden footer {
+    display: none;
+}
+.chrome-hidden .story-main {
+    padding-top: 1rem;
+}
+
+/* --- 10b. Zen mode ------------------------------- */
+/*
+    A second reading style, alternate to the default boxed one — never a
+    replacement. The vibe is reading a manuscript in Google Docs:
+    generous whitespace, varied vertical rhythm (not the uniform "rushed"
+    spacing of the default), no card border, a softer serif face, larger
+    line-height. The default .book-interior is overridden here, not edited
+    above, so reverting is a class removal.
+*/
+.zen .book-stage {
+    max-width: 820px;
+}
+
+.zen .book-interior {
+    background: var(--color-bg);
+    box-shadow: none;
+    border-radius: 6px;
+}
+
+.zen .book-pages {
+    padding: 3.5rem 3.5rem 4.5rem;
+    background: none; /* drop the fold gutter shadow */
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+.zen .book-pages p {
+    font-size: 1.2rem;
+    line-height: 2;
+    margin-bottom: 1.6rem;
+}
+
+/* Varied, unhurried rhythm between sections: chapters breathe more than
+   paragraphs, and the first paragraph after a heading settles in gently. */
+.zen .chapter {
+    margin-bottom: 4.5rem;
+}
+
+.zen .chapter:last-of-type {
+    margin-bottom: 3rem;
+}
+
+.zen .chapter-heading {
+    font-style: italic;
+    border-bottom: none;
+    margin-bottom: 2rem;
+    padding-bottom: 0;
+}
+
+.zen .chapter-heading::after {
+    content: '';
+    display: block;
+    width: 3rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.35;
+    margin-top: 1.25rem;
+}
+
+/* Preface in zen reads as a quiet centered invitation, not a boxed card. */
+.zen .preface {
+    background: none;
+    border: none;
+    padding: 0 1rem 2.5rem;
+    margin-bottom: 3rem;
+}
+
+/* On phones, zen keeps its air but trims the side padding a little. */
+@media (max-width: 700px) {
+    .zen .book-pages {
+        padding: 2.25rem 1.5rem 3rem;
+    }
+    .zen .book-pages p {
+        font-size: 1.08rem;
+        line-height: 1.95;
+        margin-bottom: 1.35rem;
+    }
+    .zen .chapter {
+        margin-bottom: 3.25rem;
+    }
+}
+
+/* --- 10c. Text size (S / M / L) ------------------ */
+/*
+    Default is Medium (no class needed). Small = denser, Large = roomier.
+    Applied to .book-pages p (and the preface/heading siblings scale
+    proportionally so the hierarchy stays coherent).
+*/
+.text-small .book-pages p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+.text-large .book-pages p {
+    font-size: 1.35rem;
+    line-height: 1.85;
+}
+.text-small .book-pages .reading-time,
+.text-small .book-pages .theme-list li { font-size: 0.85rem; }
+.text-large .book-pages .reading-time,
+.text-large .book-pages .theme-list li { font-size: 1.05rem; }
+
+/* Zen + text size compose multiplicatively (zen's own sizes above get
+   nudged when a size class is also active). */
+.zen.text-small .book-pages p { font-size: 1.05rem; line-height: 1.9; }
+.zen.text-large .book-pages p { font-size: 1.5rem;  line-height: 2.1; }
+
+/* --- 10d. Page-by-page mode ---------------------- */
+/*
+    When active, the continuous scroll inside .book-pages is replaced by a
+    horizontal track of full-size "pages" (built by story.js). The viewport
+    clips to a single page and prev/next buttons (and swipe / arrow keys)
+    flip between them. Reverting removes the track and restores the
+    original children untouched.
+*/
+.page-mode .book-pages {
+    overflow: hidden;
+    /* Zero the reading padding here so each .page can own its own padding
+       and use the full interior height for content. Applies over both the
+       default and the zen .book-pages padding. */
+    padding: 0;
+}
+
+.pages-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.4s ease;
+}
+
+.page-mode .book-pages p:first-child {
+    margin-top: 0; /* offset from .book-pages no longer wanted here */
+}
+
+.page {
+    flex: 0 0 100%;
+    height: 100%;
+    overflow: hidden; /* a page is one screen; content never spills */
+    padding: 2rem 2rem 2.25rem;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Floating page-flip buttons, only visible in page mode. */
+.page-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 50%;
+    background: rgba(139, 94, 52, 0.15);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.page-nav:hover,
+.page-nav:focus-visible {
+    background: rgba(139, 94, 52, 0.3);
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.page-nav:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+.page-nav svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.page-nav--prev { left: 0.75rem; }
+.page-nav--next { right: 0.75rem; }
+
+@media (max-width: 700px) {
+    .page { padding: 1.25rem 1.5rem 1.5rem; }
+    .page-nav { width: 2rem; height: 2rem; }
+    .page-nav--prev { left: 0.4rem; }
+    .page-nav--next { right: 0.4rem; }
+}
+
+/* --- 10e. Author reveal (end-of-read note) ------ */
+/*
+    Lives at the very end of .book-pages, so it's only seen once the
+    reader has finished the entire text. Styled as a warm closing note
+    rather than a byline: centered, italic, soft rule above, generous
+    space before it.
+*/
+.author-reveal {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(139, 94, 52, 0.25);
+    text-align: center;
+}
+
+.author-reveal__line {
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.author-reveal__sub {
+    font-size: 1rem;
+    opacity: 0.75;
+}
+
+/* Zen keeps the reveal warm but borderless, matching its manuscript feel. */
+.zen .author-reveal {
+    border-top: none;
+    margin-top: 5rem;
+    padding-top: 1rem;
+}
+.zen .author-reveal__line { font-size: 1.35rem; }
+
+@media (max-width: 700px) {
+    .author-reveal { margin-top: 3rem; padding-top: 2rem; }
+}
+
+/* ============================================= */
+/* 11. DARK MODE                                 */
 /* ============================================= */
 
 /*
@@ -644,6 +988,29 @@ html.dark-mode {
 */
 .dark-mode .icon-moon { display: none; }
 .dark-mode .icon-sun { display: block; }
+
+/*
+    Dark mode tweaks for the new reader features. The reader controls and
+    theme toggle already live on the dark sticky nav, so they need no
+    override. The author-reveal and page-nav use --color-primary which
+    becomes very dark in dark mode; nudge them to the brass accent for
+    readable contrast on the dark reading surface.
+*/
+.dark-mode .author-reveal {
+    border-top-color: rgba(201, 168, 124, 0.3);
+}
+.dark-mode .author-reveal__line {
+    color: var(--color-accent);
+}
+
+.dark-mode .page-nav {
+    background: rgba(201, 168, 124, 0.15);
+    color: var(--color-accent);
+}
+.dark-mode .page-nav:hover,
+.dark-mode .page-nav:focus-visible {
+    background: rgba(201, 168, 124, 0.3);
+}
 
 /*
     Reduced motion still works in dark mode because it only removes

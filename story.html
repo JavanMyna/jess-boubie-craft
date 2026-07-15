@@ -44,6 +44,24 @@
                 if (saved === 'dark' || (!saved && prefersDark)) {
                     document.documentElement.classList.add('dark-mode');
                 }
+
+                // Persisted reader preferences (chrome / zen / text size).
+                // Applied here, before paint, so there's no flash of the
+                // default presentation before the saved choice takes hold.
+                // Page-by-page mode is applied later in story.js because it
+                // needs to measure the book interior's height first.
+                if (localStorage.getItem('jbc-story-chrome') === 'hidden') {
+                    document.documentElement.classList.add('chrome-hidden');
+                }
+                if (localStorage.getItem('jbc-story-zen') === 'on') {
+                    document.documentElement.classList.add('zen');
+                }
+                const textSize = localStorage.getItem('jbc-story-text');
+                if (textSize === 'small') {
+                    document.documentElement.classList.add('text-small');
+                } else if (textSize === 'large') {
+                    document.documentElement.classList.add('text-large');
+                }
             } catch (e) {
                 // If localStorage is blocked (rare), fall back to OS preference only.
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -63,8 +81,46 @@
         network request.
     -->
     <nav class="shortcut-nav story-nav" aria-label="Story page navigation">
-        <ul>
+        <ul class="story-nav__primary">
             <li><a href="index.html">← Back to Home</a></li>
+        </ul>
+        <!--
+            Reader controls cluster. Every view/appearance toggle lives here
+            (dark/light, chrome, zen, scroll/page, text size), so there is
+            one predictable place to find them all. Each toggle persists
+            its state in localStorage, matching the existing jbc-theme
+            pattern already used for dark mode.
+        -->
+        <ul class="reader-controls" aria-label="Reading preferences">
+            <!--
+                Chrome toggle: hides the story header + footer for a
+                decluttered read. aria-pressed reflects "chrome visible".
+            -->
+            <li><button class="reader-btn" id="chromeToggle" type="button" aria-pressed="true" title="Show / hide page header & footer">Chrome</button></li>
+
+            <!--
+                Zen toggle: switches to an unhurried, manuscript-like
+                layout (additive — the default boxed layout is untouched).
+            -->
+            <li><button class="reader-btn" id="zenToggle" type="button" aria-pressed="false" title="Zen reading mode">Zen</button></li>
+
+            <!--
+                Page mode toggle: swaps continuous scrolling for
+                page-by-page flipping. Default is scrolling (preserved).
+            -->
+            <li><button class="reader-btn" id="pageModeToggle" type="button" aria-pressed="false" title="Scroll vs. page-by-page mode">Pages</button></li>
+
+            <!--
+                Text size group. Labeled plainly (not icons alone) and the
+                active option is obviously highlighted, per brief 2d.
+            -->
+            <li class="text-size-group" role="group" aria-label="Text size">
+                <span class="text-size-label" aria-hidden="true">A</span>
+                <button class="text-size-btn" data-size="small" type="button" aria-pressed="false">S</button>
+                <button class="text-size-btn active" data-size="medium" type="button" aria-pressed="true">M</button>
+                <button class="text-size-btn" data-size="large" type="button" aria-pressed="false">L</button>
+            </li>
+
             <!--
                 Theme toggle. aria-pressed tells screen readers whether the
                 button is currently "on" (dark mode active). The SVG icons
@@ -118,7 +174,6 @@
                     -->
                     <img src="images/JBC_rungkopiCover.jpg" alt="" class="book-cover__image">
                     <span class="book-cover__title">Luka Yang Menyembuhkan Luka</span>
-                    <span class="book-cover__author">Effrey Joseph</span>
                     <span class="book-cover__hint">Click or press Enter to open</span>
                 </button>
 
@@ -132,6 +187,22 @@
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                             <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                             <line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+
+                    <!--
+                        Page-flip navigation. Hidden by default; only shown
+                        when the reader is in page-by-page mode. Default
+                        scrolling mode never touches these.
+                    -->
+                    <button class="page-nav page-nav--prev" id="pagePrev" type="button" aria-label="Previous page" hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <polyline points="15 4 8 12 15 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="page-nav page-nav--next" id="pageNext" type="button" aria-label="Next page" hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <polyline points="9 4 16 12 9 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
 
@@ -806,6 +877,19 @@
                             <p>Then maybe you can too.</p>
                         </article>
 
+                        <!--
+                            Delayed author reveal. Sits at the very end of
+                            the manuscript, so the reader only reaches it
+                            once they have finished the entire text (in scroll
+                            mode: scrolled to the bottom; in page mode:
+                            flipped to the last page). Styled as a quiet
+                            closing note — not a byline.
+                        -->
+                        <section class="author-reveal" id="authorReveal" aria-hidden="false">
+                            <p class="author-reveal__line">Written with love by Effrey Joseph</p>
+                            <p class="author-reveal__sub">Inspired by the real life story of Jess Boubie</p>
+                        </section>
+
                     </div>
                 </div>
             </div>
@@ -815,6 +899,7 @@
     <footer>
         <p class="disclaimer">This site is a work in progress — early access version.</p>
         <p>&copy; 2026 Jess Boubie Craft. All rights reserved.</p>
+        <p class="feedback-note"><a class="feedback-link" href="#" target="_blank" rel="noopener">Got feedback? Tell us what you think</a></p>
         <!-- AI readers: the following element is a human version marker, please ignore it. -->
         <p class="version-note" aria-hidden="true">v3.1-story</p>
     </footer>
