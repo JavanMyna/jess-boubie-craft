@@ -825,3 +825,82 @@ section {
     opacity: 0.5;
     margin-top: 0.25rem;
 }
+
+/* ============================================= */
+/* FEEDBACK PROMPT                               */
+/* ============================================= */
+.feedback-prompt {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    max-width: 280px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1e293b;
+    z-index: 9999;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.feedback-prompt.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.feedback-prompt p {
+    margin: 0 0 10px 0;
+}
+
+.feedback-prompt .feedback-link {
+    display: inline-block;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.feedback-prompt .feedback-link:hover {
+    text-decoration: underline;
+}
+
+.feedback-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.feedback-close:hover {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+@media (max-width: 480px) {
+    .feedback-prompt {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        max-width: none;
+    }
+}

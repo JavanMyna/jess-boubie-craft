@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ─── FEEDBACK FORM URL ───────────────────────────────────────────
     // One-line swap: paste the real Google Form URL here when it's ready.
-    const FEEDBACK_FORM_URL = 'PASTE_GOOGLE_FORM_URL_HERE';
+    const FEEDBACK_FORM_URL = 'https://forms.gle/b2SB9UtW9csRGjrQA';
     document.querySelectorAll('.feedback-link').forEach(link => {
         link.href = FEEDBACK_FORM_URL;
     });
@@ -190,4 +190,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.querySelectorAll('.slider-wrapper').forEach(initSlider);
+
+    // ─── FEEDBACK PROMPT ─────────────────────────────────────────────
+    (function initFeedbackPrompt() {
+        const panel = document.getElementById('feedback-prompt');
+        if (!panel) return;
+        if (panel.hasAttribute('data-feedback-initialized')) return;
+        panel.setAttribute('data-feedback-initialized', '');
+
+        const STORAGE_KEY = 'jbc-feedback-dismissed';
+        const DELAY_MS = 2 * 60 * 1000;
+        const TICK = 1000;
+
+        let dismissed = false;
+        try {
+            dismissed = localStorage.getItem(STORAGE_KEY) === 'true';
+        } catch (e) {
+            /* localStorage unavailable — treat as not dismissed */
+        }
+        if (dismissed) return;
+
+        let timer = null;
+        let elapsed = 0;
+
+        function showPrompt() {
+            panel.hidden = false;
+            void panel.offsetWidth;
+            panel.classList.add('visible');
+        }
+
+        function dismissFeedback() {
+            if (!panel) return;
+            panel.classList.remove('visible');
+            setTimeout(() => { panel.hidden = true; }, 400);
+            try {
+                localStorage.setItem(STORAGE_KEY, 'true');
+            } catch (e) {
+                /* dismissal still works; just won't persist across reloads */
+            }
+        }
+
+        function startTimer() {
+            if (timer !== null) return;
+            timer = setInterval(() => {
+                elapsed += TICK;
+                if (elapsed >= DELAY_MS) {
+                    clearInterval(timer);
+                    timer = null;
+                    showPrompt();
+                }
+            }, TICK);
+        }
+
+        function pauseTimer() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        const closeBtn = panel.querySelector('.feedback-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', dismissFeedback);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        });
+
+        startTimer();
+    })();
 });
