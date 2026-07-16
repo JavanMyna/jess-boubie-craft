@@ -157,7 +157,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
 }
 
 /* ============================================= */
@@ -195,7 +195,12 @@
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 4;
-    max-height: 90vh;
+    /*
+        Constrain the book's height so the full cover card is always visible
+        within the viewport. We subtract roughly the header, nav, story-main
+        padding, and footer so the book never overflows the flex layout.
+    */
+    max-height: min(90vh, calc(100vh - 16rem));
     transform-style: preserve-3d;
 }
 
@@ -332,6 +337,7 @@
 
     overflow: hidden; /* the inner .book-pages handles scrolling, not this box */
     display: flex;
+    flex-direction: column;
 }
 
 .book-close {
@@ -367,7 +373,11 @@
 
 .book-pages {
     flex: 1;
-    overflow-y: auto; /* continuous scroll inside the book, not the whole page */
+    min-height: 0; /* prevent flex child's implicit min-height from blocking scroll */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+    touch-action: pan-y; /* let vertical swipes scroll — horizontal passes through to body */
+    overscroll-behavior: contain; /* prevent scroll chaining to the body */
     padding: 2rem;
 
     /*
@@ -588,16 +598,18 @@
     }
 
     .book-stage {
-        margin: 0.5rem auto;
+        margin: 0.25rem auto;
+        width: 100%;
     }
 
     .book {
         /*
-            A slightly shorter ratio on small screens keeps most of the book
-            visible without forcing the user to scroll the whole page before
-            they can tap the cover. The text still scrolls inside .book-pages.
+            On mobile, a slightly shorter ratio so the reading area inside
+            is taller. The book still reads as portrait, but the interior
+            gets more vertical space for comfortable scrolling.
         */
         aspect-ratio: 4 / 5;
+        max-height: min(90vh, calc(100vh - 10rem));
     }
 
     .book-cover {
@@ -821,7 +833,12 @@
     font-size: 0.85rem;
     font-style: italic;
     color: var(--color-text);
-    opacity: 0.35;
+    opacity: 0.4;
+    transition: opacity 0.8s ease;
+}
+
+.swipe-hint--hidden {
+    opacity: 0;
 }
 
 /* ============================================= */
@@ -923,10 +940,10 @@ html.dark-mode {
 .dark-mode .icon-sun { display: block; }
 
 /*
-    Dark mode tweaks for the new reader features. The reader controls and
+    Dark mode tweaks for the reader features. The reader controls and
     theme toggle already live on the dark sticky nav, so they need no
-    override. The author-reveal and page-nav use --color-primary which
-    becomes very dark in dark mode; nudge them to the brass accent for
+    override. The author-reveal uses --color-primary which
+    becomes very dark in dark mode; nudge it to the brass accent for
     readable contrast on the dark reading surface.
 */
 .dark-mode .author-reveal {
@@ -1036,11 +1053,16 @@ html.dark-mode {
 @media (min-width: 901px) {
     /* Constrain the reading column and center it. */
     .story-main {
-        padding: 3rem 2rem;
+        padding: 2rem 2rem;
+        justify-content: center; /* vertically center the book card */
     }
 
     .book-stage {
-        max-width: 740px;
+        max-width: 700px;
+    }
+
+    .book {
+        aspect-ratio: 3 / 4;
     }
 
     .book-pages {

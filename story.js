@@ -157,6 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 pages.focus({ preventScroll: true });
             }, { once: true });
         }
+
+        // Show swipe hint briefly then fade out
+        showSwipeHint();
     }
 
     function closeBook() {
@@ -253,6 +256,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeSettings();
             }
         });
+    }
+
+    // ─── SWIPE HINT ──────────────────────────────────────────────────
+    const swipeHint = document.querySelector('.swipe-hint');
+    let hintTimer = null;
+
+    function hideSwipeHint() {
+        if (!swipeHint || swipeHint.classList.contains('swipe-hint--hidden')) return;
+        swipeHint.classList.add('swipe-hint--hidden');
+        if (hintTimer) clearTimeout(hintTimer);
+    }
+
+    function showSwipeHint() {
+        if (!swipeHint) return;
+        // Remove hidden class in case it was already faded from a previous open
+        swipeHint.classList.remove('swipe-hint--hidden');
+        // Auto-fade after 5 seconds
+        if (hintTimer) clearTimeout(hintTimer);
+        hintTimer = setTimeout(hideSwipeHint, 5000);
+    }
+
+    // Hide the hint when the user scrolls (swipes) inside the book pages
+    if (pages && swipeHint) {
+        pages.addEventListener('scroll', hideSwipeHint, { once: true });
     }
 
     // ─── MOBILE HEADER COLLAPSE ──────────────────────────────────────
