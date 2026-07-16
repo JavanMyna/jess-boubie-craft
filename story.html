@@ -103,7 +103,6 @@
                     <div class="settings-panel__group">
                         <button class="reader-btn" id="chromeToggle" type="button" aria-pressed="true" title="Show / hide page header &amp; footer">Chrome</button>
                         <button class="reader-btn" id="zenToggle" type="button" aria-pressed="false" title="Zen reading mode">Zen</button>
-                        <button class="reader-btn" id="pageModeToggle" type="button" aria-pressed="false" title="Scroll vs. page-by-page mode">Pages</button>
                     </div>
                     <button class="reader-btn" id="comfyToggle" type="button" aria-pressed="false" title="Comfy reading preset">Comfy</button>
                     <div class="settings-panel__group text-size-group" role="group" aria-label="Text size">
@@ -174,22 +173,6 @@
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                             <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                             <line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-
-                    <!--
-                        Page-flip navigation. Hidden by default; only shown
-                        when the reader is in page-by-page mode. Default
-                        scrolling mode never touches these.
-                    -->
-                    <button class="page-nav page-nav--prev" id="pagePrev" type="button" aria-label="Previous page" hidden>
-                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <polyline points="15 4 8 12 15 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <button class="page-nav page-nav--next" id="pageNext" type="button" aria-label="Next page" hidden>
-                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <polyline points="9 4 16 12 9 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
 
@@ -876,6 +859,8 @@
                             <p class="author-reveal__line">Written with love by Effrey Joseph</p>
                             <p class="author-reveal__sub">Inspired by the real life story of Jess Boubie</p>
                         </section>
+
+                        <p class="swipe-hint" aria-hidden="true">Swipe up to continue reading</p>
 
                     </div>
                 </div>

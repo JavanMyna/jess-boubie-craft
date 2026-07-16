@@ -52,17 +52,12 @@ img {
 /* 2. FONT CHANGE */
 /* ============================================= */
 body {
-    /* The comma-separated list is a fallback CHAIN, evaluated left to
-       right. Python analogy: it's like a try/except stack —
-       try: use_font('Cormorant Garamond')
-       except FontNotAvailable: use_font('serif')  # the browser's default
-       If the Google Fonts request ever fails (offline, blocked, etc.),
-       the page doesn't break — it just falls back to a generic serif. */
     font-family: 'Cormorant Garamond', serif;
     line-height: 1.6;
     color: var(--color-text);
     background-color: var(--color-bg);
-    overflow-x: hidden; /* safety seal: nothing is allowed to poke out sideways */
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 

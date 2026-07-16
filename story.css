@@ -195,6 +195,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 4;
+    max-height: 90vh;
     transform-style: preserve-3d;
 }
 
@@ -773,89 +774,7 @@
 .zen.text-small .book-pages p { font-size: 0.95rem; line-height: 1.85; }
 .zen.text-large .book-pages p { font-size: 1.5rem;  line-height: 2.1; }
 
-/* --- 10d. Page-by-page mode ---------------------- */
-/*
-    When active, the continuous scroll inside .book-pages is replaced by a
-    horizontal track of full-size "pages" (built by story.js). The viewport
-    clips to a single page and prev/next buttons (and swipe / arrow keys)
-    flip between them. Reverting removes the track and restores the
-    original children untouched.
-*/
-.page-mode .book-pages {
-    overflow: hidden;
-    /* Zero the reading padding here so each .page can own its own padding
-       and use the full interior height for content. Applies over both the
-       default and the zen .book-pages padding. */
-    padding: 0;
-}
-
-.pages-track {
-    display: flex;
-    height: 100%;
-    transition: transform 0.4s ease;
-}
-
-.page-mode .book-pages p:first-child {
-    margin-top: 0; /* offset from .book-pages no longer wanted here */
-}
-
-.page {
-    flex: 0 0 100%;
-    height: 100%;
-    overflow: hidden; /* a page is one screen; content never spills */
-    padding: 2rem 2rem 2.25rem;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Floating page-flip buttons, only visible in page mode. */
-.page-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3;
-    width: 2.5rem;
-    height: 2.5rem;
-    border: none;
-    border-radius: 50%;
-    background: rgba(139, 94, 52, 0.15);
-    color: var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s, opacity 0.2s;
-}
-
-.page-nav:hover,
-.page-nav:focus-visible {
-    background: rgba(139, 94, 52, 0.3);
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-}
-
-.page-nav:disabled {
-    opacity: 0.25;
-    cursor: not-allowed;
-}
-
-.page-nav svg {
-    width: 1.25rem;
-    height: 1.25rem;
-}
-
-.page-nav[hidden] { display: none; }
-
-.page-nav--prev { left: 0.75rem; }
-.page-nav--next { right: 0.75rem; }
-
-@media (max-width: 700px) {
-    .page { padding: 1.25rem 1.5rem 1.5rem; }
-    .page-nav { width: 2rem; height: 2rem; }
-    .page-nav--prev { left: 0.4rem; }
-    .page-nav--next { right: 0.4rem; }
-}
-
-/* --- 10e. Author reveal (end-of-read note) ------ */
+/* --- 10d. Author reveal (end-of-read note) ------ */
 /*
     Lives at the very end of .book-pages, so it's only seen once the
     reader has finished the entire text. Styled as a warm closing note
@@ -891,6 +810,18 @@
 
 @media (max-width: 700px) {
     .author-reveal { margin-top: 3rem; padding-top: 2rem; }
+}
+
+/* ============================================= */
+/* 10d. SWIPE HINT                                */
+/* ============================================= */
+.swipe-hint {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--color-text);
+    opacity: 0.35;
 }
 
 /* ============================================= */
@@ -1003,15 +934,6 @@ html.dark-mode {
 }
 .dark-mode .author-reveal__line {
     color: var(--color-accent);
-}
-
-.dark-mode .page-nav {
-    background: rgba(201, 168, 124, 0.15);
-    color: var(--color-accent);
-}
-.dark-mode .page-nav:hover,
-.dark-mode .page-nav:focus-visible {
-    background: rgba(201, 168, 124, 0.3);
 }
 
 /*
@@ -1127,10 +1049,5 @@ html.dark-mode {
 
     .book-pages p {
         font-size: 1.15rem;
-    }
-
-    /* Wider side padding on pages in page mode so arrows sit further from text. */
-    .page-mode .page {
-        padding: 2.5rem 3.5rem 2.75rem;
     }
 }
