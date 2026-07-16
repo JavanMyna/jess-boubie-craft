@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('jbc-story-chrome', willHide ? 'hidden' : 'visible');
             } catch (e) {}
             applyChromeState();
+            updateComfyState();
         });
     }
 
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Page mode depends on .book-pages height, which zen changes
             // via padding; re-measure if currently active.
             if (pageModeState.active) rebuildPages();
+            updateComfyState();
         });
     }
 
@@ -309,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 try { localStorage.setItem('jbc-story-pagemode', 'on'); } catch (e) {}
             }
             applyPageModeState();
+            updateComfyState();
         });
     }
 
@@ -372,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pageModeState.pendingActivation = false;
             activatePageMode();
             applyPageModeState();
+            updateComfyState();
         }
 
         if (prefersReducedMotion) {
@@ -413,4 +417,102 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bookClose) {
         bookClose.addEventListener('click', closeBook);
     }
+
+    // ─── COMFY MODE PRESET ───────────────────────────────────────────
+    const comfyToggle = document.getElementById('comfyToggle');
+
+    function updateComfyState() {
+        if (!comfyToggle) return;
+        const isComfy = document.documentElement.classList.contains('chrome-hidden') &&
+                        document.documentElement.classList.contains('zen') &&
+                        pageModeState.active;
+        comfyToggle.setAttribute('aria-pressed', String(isComfy));
+    }
+
+    if (comfyToggle) {
+        comfyToggle.addEventListener('click', () => {
+            const isComfy = document.documentElement.classList.contains('chrome-hidden') &&
+                            document.documentElement.classList.contains('zen') &&
+                            pageModeState.active;
+            // If already in comfy, toggle off all three.
+            if (isComfy) {
+                if (chromeToggle) chromeToggle.click();
+                if (zenToggle) zenToggle.click();
+                if (pageModeToggle) pageModeToggle.click();
+                return;
+            }
+            // Activate each if not already on.
+            if (!document.documentElement.classList.contains('chrome-hidden') && chromeToggle) {
+                chromeToggle.click();
+            }
+            if (!document.documentElement.classList.contains('zen') && zenToggle) {
+                zenToggle.click();
+            }
+            if (!pageModeState.active && pageModeToggle) {
+                pageModeToggle.click();
+            }
+        });
+        updateComfyState();
+    }
+
+    // ─── SETTINGS PANEL TOGGLE ───────────────────────────────────────
+    const settingsToggle = document.getElementById('settingsToggle');
+    const settingsPanel = document.getElementById('settingsPanel');
+
+    if (settingsToggle && settingsPanel) {
+        function openSettings() {
+            settingsPanel.hidden = false;
+            settingsToggle.setAttribute('aria-expanded', 'true');
+        }
+        function closeSettings() {
+            settingsPanel.hidden = true;
+            settingsToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        settingsToggle.addEventListener('click', () => {
+            if (settingsPanel.hidden) openSettings();
+            else closeSettings();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !settingsPanel.hidden) {
+                closeSettings();
+                settingsToggle.focus();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!settingsPanel.hidden &&
+                !settingsPanel.contains(e.target) &&
+                e.target !== settingsToggle &&
+                !settingsToggle.contains(e.target)) {
+                closeSettings();
+            }
+        });
+    }
+
+    // ─── MOBILE HEADER COLLAPSE ──────────────────────────────────────
+    let lastScrollY = 0;
+    let headerTicking = false;
+    const HEADER_COLLAPSE_AT = 60;
+
+    window.addEventListener('scroll', () => {
+        if (headerTicking) return;
+        headerTicking = true;
+        requestAnimationFrame(() => {
+            const y = window.scrollY;
+            const header = document.querySelector('.story-header');
+            if (!header) { headerTicking = false; return; }
+            const isMobile = window.matchMedia('(max-width: 700px)').matches;
+            if (!isMobile) { headerTicking = false; return; }
+
+            if (y > HEADER_COLLAPSE_AT && y > lastScrollY) {
+                header.classList.add('story-header--hidden');
+            } else if (y < lastScrollY) {
+                header.classList.remove('story-header--hidden');
+            }
+            lastScrollY = y;
+            headerTicking = false;
+        });
+    }, { passive: true });
 });

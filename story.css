@@ -453,7 +453,7 @@
     title from the document.
 */
 .chapter {
-    margin-bottom: 3rem;
+    margin-bottom: 5rem;
 }
 
 .chapter:last-child {
@@ -756,21 +756,21 @@
     proportionally so the hierarchy stays coherent).
 */
 .text-small .book-pages p {
-    font-size: 0.95rem;
-    line-height: 1.7;
+    font-size: 0.875rem;
+    line-height: 1.65;
 }
 .text-large .book-pages p {
     font-size: 1.35rem;
     line-height: 1.85;
 }
 .text-small .book-pages .reading-time,
-.text-small .book-pages .theme-list li { font-size: 0.85rem; }
+.text-small .book-pages .theme-list li { font-size: 0.8rem; }
 .text-large .book-pages .reading-time,
 .text-large .book-pages .theme-list li { font-size: 1.05rem; }
 
 /* Zen + text size compose multiplicatively (zen's own sizes above get
    nudged when a size class is also active). */
-.zen.text-small .book-pages p { font-size: 1.05rem; line-height: 1.9; }
+.zen.text-small .book-pages p { font-size: 0.95rem; line-height: 1.85; }
 .zen.text-large .book-pages p { font-size: 1.5rem;  line-height: 2.1; }
 
 /* --- 10d. Page-by-page mode ---------------------- */
@@ -842,6 +842,8 @@
     width: 1.25rem;
     height: 1.25rem;
 }
+
+.page-nav[hidden] { display: none; }
 
 .page-nav--prev { left: 0.75rem; }
 .page-nav--next { right: 0.75rem; }
@@ -1016,3 +1018,119 @@ html.dark-mode {
     Reduced motion still works in dark mode because it only removes
     transitions; it doesn't conflict with these color overrides.
 */
+
+/* ============================================= */
+/* 12. SETTINGS PANEL (gear popover)             */
+/* ============================================= */
+.settings-wrapper {
+    position: relative;
+}
+
+.settings-gear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.settings-gear:hover,
+.settings-gear:focus-visible {
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+}
+
+.settings-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    width: 220px;
+    background: var(--color-primary);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    z-index: 200;
+}
+
+.settings-panel[hidden] {
+    display: none;
+}
+
+.settings-panel__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-panel .text-size-group {
+    display: inline-flex;
+    gap: 0;
+    border-color: rgba(255, 255, 255, 0.2);
+    justify-content: center;
+}
+
+.theme-group {
+    justify-content: flex-end;
+    padding-top: 0.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Dark mode: the panel background follows --color-primary which already
+   darkens, so reader-btn / text-size-btn / theme-toggle all still read well. */
+
+/* ============================================= */
+/* 13. MOBILE HEADER COLLAPSE (scroll-driven)    */
+/* ============================================= */
+@media (max-width: 700px) {
+    .story-header {
+        transition: max-height 0.35s ease, padding 0.3s ease, opacity 0.3s ease;
+        max-height: 300px;
+        overflow: hidden;
+    }
+
+    .story-header--hidden {
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        opacity: 0;
+    }
+}
+
+/* ============================================= */
+/* 14. DESKTOP ENHANCEMENTS                      */
+/* ============================================= */
+@media (min-width: 901px) {
+    /* Constrain the reading column and center it. */
+    .story-main {
+        padding: 3rem 2rem;
+    }
+
+    .book-stage {
+        max-width: 740px;
+    }
+
+    .book-pages {
+        padding: 3rem 3.5rem;
+    }
+
+    .book-pages p {
+        font-size: 1.15rem;
+    }
+
+    /* Wider side padding on pages in page mode so arrows sit further from text. */
+    .page-mode .page {
+        padding: 2.5rem 3.5rem 2.75rem;
+    }
+}
