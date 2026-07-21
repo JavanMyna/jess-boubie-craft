@@ -22,7 +22,7 @@
 .story-page {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .story-header {
@@ -200,8 +200,34 @@
         within the viewport. We subtract roughly the header, nav, story-main
         padding, and footer so the book never overflows the flex layout.
     */
-    max-height: min(90vh, calc(100vh - 16rem));
+    max-height: min(90dvh, calc(100dvh - 16rem));
     transform-style: preserve-3d;
+}
+
+/*
+    OPEN-STATE SIZING — when the book is open, abandon the width-driven
+    aspect-ratio and instead fill the actual available vertical space using
+    flexbox. body.book-open is set by story.js in openBook() / closeBook().
+    Using dvh accounts for the mobile browser address bar showing/hiding.
+*/
+.book-open .story-main {
+    padding: 0 1rem;
+}
+
+.book-open .book-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.book-open .book.is-open {
+    aspect-ratio: auto;
+    max-height: none;
+    flex: 1;
+    min-height: 0;
 }
 
 /* ============================================= */
@@ -609,7 +635,7 @@
             gets more vertical space for comfortable scrolling.
         */
         aspect-ratio: 4 / 5;
-        max-height: min(90vh, calc(100vh - 10rem));
+        max-height: min(90dvh, calc(100dvh - 10rem));
     }
 
     .book-cover {
@@ -825,8 +851,124 @@
 }
 
 /* ============================================= */
-/* 10d. SWIPE HINT                                */
+/* 10d. PAGE-BY-PAGE MODE                        */
 /* ============================================= */
+
+/*
+    page-mode applies to <html> and flips .book-pages from vertical scroll
+    to CSS-column based horizontal pagination.  Column widths are set in px
+    by JS (column-width doesn't accept percentages per spec).
+*/
+
+/* Container: fixed height, no scroll. */
+.page-mode .book-pages {
+    overflow: hidden;
+    touch-action: none;
+    position: relative;
+}
+
+/* Column wrapper: browser breaks flowing text into full-width columns. */
+.book-columns {
+    column-gap: 0;
+    height: 100%;
+    /* column-width is set by JS in px */
+}
+
+.book-columns.animate {
+    transition: transform 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .book-columns.animate {
+        transition: none;
+    }
+}
+
+/* ============================================= */
+/* 10e. PAGE NAVIGATION (arrows + indicator)     */
+/* ============================================= */
+
+.page-nav {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.92), transparent);
+    pointer-events: none;
+}
+
+.page-mode .page-nav {
+    display: flex;
+}
+
+.page-nav__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 50%;
+    background: rgba(139, 94, 52, 0.12);
+    color: var(--color-primary);
+    font-size: 1.4rem;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background-color 0.15s;
+}
+
+.page-nav__arrow:hover,
+.page-nav__arrow:focus-visible {
+    background: rgba(139, 94, 52, 0.25);
+    outline: none;
+}
+
+.page-nav__arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+    background: rgba(139, 94, 52, 0.06);
+}
+
+.page-nav__indicator {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.55);
+    user-select: none;
+    pointer-events: auto;
+}
+
+/* Hide page nav when chrome is hidden (swipe still works). */
+.chrome-hidden .page-nav {
+    display: none;
+}
+
+/* Dark mode overrides for page nav. */
+.dark-mode .page-nav {
+    background: linear-gradient(to top, rgba(31, 26, 20, 0.92), transparent);
+}
+
+.dark-mode .page-nav__arrow {
+    background: rgba(201, 168, 124, 0.15);
+    color: var(--color-accent);
+}
+
+.dark-mode .page-nav__arrow:hover,
+.dark-mode .page-nav__arrow:focus-visible {
+    background: rgba(201, 168, 124, 0.28);
+}
+
+.dark-mode .page-nav__arrow:disabled {
+    background: rgba(201, 168, 124, 0.06);
+}
+
+.dark-mode .page-nav__indicator {
+    color: rgba(255, 255, 255, 0.55);
+}
 .swipe-hint {
     text-align: center;
     padding: 2.5rem 1rem 1.5rem;

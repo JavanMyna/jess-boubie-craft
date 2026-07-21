@@ -45,16 +45,19 @@
                     document.documentElement.classList.add('dark-mode');
                 }
 
-                // Persisted reader preferences (chrome / zen / text size).
+                // Persisted reader preferences (chrome / zen / text size / page mode).
                 // Applied here, before paint, so there's no flash of the
                 // default presentation before the saved choice takes hold.
-                // Page-by-page mode is applied later in story.js because it
-                // needs to measure the book interior's height first.
+                // Page-by-page mode class is applied immediately; column
+                // measurement happens later in story.js after paint.
                 if (localStorage.getItem('jbc-story-chrome') === 'hidden') {
                     document.documentElement.classList.add('chrome-hidden');
                 }
                 if (localStorage.getItem('jbc-story-zen') === 'on') {
                     document.documentElement.classList.add('zen');
+                }
+                if (localStorage.getItem('jbc-story-page') === 'on') {
+                    document.documentElement.classList.add('page-mode');
                 }
                 const textSize = localStorage.getItem('jbc-story-text');
                 if (textSize === 'small') {
@@ -103,6 +106,9 @@
                     <div class="settings-panel__group">
                         <button class="reader-btn" id="chromeToggle" type="button" aria-pressed="true" title="Show / hide page header &amp; footer">Chrome</button>
                         <button class="reader-btn" id="zenToggle" type="button" aria-pressed="false" title="Zen reading mode">Zen</button>
+                    </div>
+                    <div class="settings-panel__group">
+                        <button class="reader-btn" id="pageModeToggle" type="button" aria-pressed="false" title="Toggle page-by-page reading">Pages</button>
                     </div>
                     <button class="reader-btn" id="comfyToggle" type="button" aria-pressed="false" title="Comfy reading preset">Comfy</button>
                     <div class="settings-panel__group text-size-group" role="group" aria-label="Text size">
@@ -176,6 +182,12 @@
                         </svg>
                     </button>
 
+                    <div class="page-nav" id="pageNav" aria-hidden="true">
+                        <button class="page-nav__arrow page-nav__prev" id="pagePrev" type="button" aria-label="Previous page">&#8249;</button>
+                        <span class="page-nav__indicator" id="pageIndicator">Page 1 of 1</span>
+                        <button class="page-nav__arrow page-nav__next" id="pageNext" type="button" aria-label="Next page">&#8250;</button>
+                    </div>
+
                     <!--
                         tabindex="0" lets us move focus into the reading area
                         after the cover opens, so keyboard users land directly
@@ -183,7 +195,8 @@
                         top of the page.
                     -->
                     <div class="book-pages" id="bookPages" tabindex="0">
-                        <section class="preface">
+                        <div class="book-columns" id="bookColumns">
+                            <section class="preface">
                             <h2>Before You Begin</h2>
                             <p class="reading-time">About 20–25 minutes</p>
                             <ul class="theme-list">
@@ -860,9 +873,8 @@
                             <p class="author-reveal__sub">Inspired by the real life story of Jess Boubie</p>
                         </section>
 
-                        <p class="swipe-hint" aria-hidden="true">Swipe to turn page &#8596;</p>
-
-                    </div>
+                        </div><!-- .book-columns -->
+                    </div><!-- .book-pages -->
                 </div>
             </div>
         </div>

@@ -142,6 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // defined in story.css.
         book.classList.add('is-open');
 
+        // Switch .book-stage / .book from aspect-ratio sizing to
+        // flex-based fill-available-height layout (see story.css).
+        document.body.classList.add('book-open');
+
         // Mark the cover as disabled and expose the interior to assistive
         // technology now that it is visible.
         cover.setAttribute('aria-disabled', 'true');
@@ -160,6 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Show swipe hint briefly then fade out
         showSwipeHint();
+
+        // If page mode is active, re-measure after layout settles.
+        if (isPageMode()) {
+            document.fonts.ready.then(function () {
+                setTimeout(function () { schedulePageMeasure(); }, 150);
+            });
+        }
     }
 
     function closeBook() {
@@ -167,6 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!book.classList.contains('is-open')) return;
 
         book.classList.remove('is-open');
+
+        // Restore the closed-cover layout (aspect-ratio sizing).
+        document.body.classList.remove('book-open');
 
         // Restore the cover's natural keyboard behavior and accessibility.
         cover.removeAttribute('aria-disabled');
@@ -306,4 +320,246 @@ document.addEventListener('DOMContentLoaded', () => {
             headerTicking = false;
         });
     }, { passive: true });
+
+    // ─── PAGE-BY-PAGE MODE ───────────────────────────────────────────
+    const bookColumns = document.getElementById('bookColumns');
+    const pageModeToggle = document.getElementById('pageModeToggle');
+    const pageNav = document.getElementById('pageNav');
+    const pagePrev = document.getElementById('pagePrev');
+    const pageNext = document.getElementById('pageNext');
+    const pageIndicator = document.getElementById('pageIndicator');
+
+    let pageWidth = 0;
+    let pageCount = 1;
+    let currentPageIndex = 0;
+    let pageMeasurePending = false;
+
+    function isPageMode() {
+        return document.documentElement.classList.contains('page-mode');
+    }
+
+    function applyPageModeState() {
+        const active = isPageMode();
+        if (pageModeToggle) pageModeToggle.setAttribute('aria-pressed', String(active));
+        if (pageNav) pageNav.setAttribute('aria-hidden', String(!active));
+    }
+
+    function measurePages() {
+        if (!isPageMode() || !bookColumns || !pages) return;
+        if (!book.classList.contains('is-open')) return;
+
+        pageWidth = pages.clientWidth;
+        if (pageWidth <= 0) return;
+
+        bookColumns.style.columnWidth = pageWidth + 'px';
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const scrollW = bookColumns.scrollWidth;
+                if (scrollW <= 0) return;
+                pageCount = Math.max(1, Math.round(scrollW / pageWidth));
+                if (currentPageIndex >= pageCount) currentPageIndex = pageCount - 1;
+                goToPage(currentPageIndex, false);
+                updatePageIndicator();
+                updateNavButtons();
+            });
+        });
+    }
+
+    function schedulePageMeasure() {
+        if (pageMeasurePending) return;
+        pageMeasurePending = true;
+        requestAnimationFrame(() => {
+            pageMeasurePending = false;
+            measurePages();
+        });
+    }
+
+    function goToPage(index, animate) {
+        if (!bookColumns) return;
+        const translateX = -index * pageWidth;
+        if (animate === false) {
+            bookColumns.classList.remove('animate');
+        } else {
+            bookColumns.classList.toggle('animate', !prefersReducedMotion);
+        }
+        bookColumns.style.transform = 'translateX(' + translateX + 'px)';
+        currentPageIndex = index;
+        updateNavButtons();
+    }
+
+    function updatePageIndicator() {
+        if (!pageIndicator) return;
+        pageIndicator.textContent = 'Page ' + (currentPageIndex + 1) + ' of ' + pageCount;
+    }
+
+    function updateNavButtons() {
+        if (pagePrev) pagePrev.disabled = currentPageIndex <= 0;
+        if (pageNext) pageNext.disabled = currentPageIndex >= pageCount - 1;
+    }
+
+    function nextPage() {
+        if (currentPageIndex < pageCount - 1) {
+            goToPage(currentPageIndex + 1, true);
+            updatePageIndicator();
+        }
+    }
+
+    function prevPage() {
+        if (currentPageIndex > 0) {
+            goToPage(currentPageIndex - 1, true);
+            updatePageIndicator();
+        }
+    }
+
+    function togglePageMode() {
+        const willBeActive = !isPageMode();
+        document.documentElement.classList.toggle('page-mode', willBeActive);
+        try {
+            localStorage.setItem('jbc-story-page', willBeActive ? 'on' : 'off');
+        } catch (e) {}
+
+        applyPageModeState();
+
+        if (willBeActive) {
+            currentPageIndex = 0;
+            if (book.classList.contains('is-open')) {
+                document.fonts.ready.then(function () {
+                    schedulePageMeasure();
+                });
+            }
+        } else {
+            if (bookColumns) {
+                bookColumns.style.columnWidth = '';
+                bookColumns.style.transform = '';
+                bookColumns.classList.remove('animate');
+            }
+        }
+    }
+
+    if (pageModeToggle) {
+        applyPageModeState();
+        pageModeToggle.addEventListener('click', togglePageMode);
+    }
+
+    // ─── SWIPE INTERACTION ────────────────────────────────────────────
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchCurrentX = 0;
+    var touchCurrentY = 0;
+    var isSwiping = false;
+    var wasSwiped = false;
+
+    if (pages) {
+        pages.addEventListener('touchstart', function (e) {
+            if (!isPageMode()) return;
+            wasSwiped = false;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isSwiping = true;
+            if (bookColumns) bookColumns.classList.remove('animate');
+        }, { passive: true });
+
+        pages.addEventListener('touchmove', function (e) {
+            if (!isSwiping || !isPageMode() || !bookColumns) return;
+            touchCurrentX = e.touches[0].clientX;
+            touchCurrentY = e.touches[0].clientY;
+            var deltaX = touchCurrentX - touchStartX;
+
+            var translateX = -currentPageIndex * pageWidth + deltaX;
+
+            if (currentPageIndex === 0 && deltaX > 0) {
+                translateX = deltaX * 0.3;
+            } else if (currentPageIndex >= pageCount - 1 && deltaX < 0) {
+                var overscroll = deltaX;
+                translateX = -currentPageIndex * pageWidth + overscroll * 0.3;
+            }
+
+            bookColumns.style.transform = 'translateX(' + translateX + 'px)';
+        });
+
+        pages.addEventListener('touchend', function () {
+            if (!isSwiping || !isPageMode()) return;
+            isSwiping = false;
+
+            var deltaX = touchCurrentX - touchStartX;
+            var deltaY = Math.abs(touchCurrentY - touchStartY);
+
+            if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > deltaY) {
+                wasSwiped = true;
+                if (deltaX < 0 && currentPageIndex < pageCount - 1) {
+                    currentPageIndex++;
+                } else if (deltaX > 0 && currentPageIndex > 0) {
+                    currentPageIndex--;
+                }
+            }
+
+            goToPage(currentPageIndex, true);
+            updatePageIndicator();
+        });
+    }
+
+    // ─── CLICK ZONES ──────────────────────────────────────────────────
+    if (pages) {
+        pages.addEventListener('click', function (e) {
+            if (!isPageMode()) return;
+            if (wasSwiped) { wasSwiped = false; return; }
+            if (window.getSelection().toString().length > 0) return;
+
+            var rect = pages.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var third = rect.width / 3;
+
+            if (x < third) {
+                prevPage();
+            } else if (x > rect.width - third) {
+                nextPage();
+            }
+        });
+    }
+
+    // ─── KEYBOARD NAVIGATION ──────────────────────────────────────────
+    document.addEventListener('keydown', function (e) {
+        if (!isPageMode()) return;
+        if (e.target.closest('.settings-panel')) return;
+
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            nextPage();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevPage();
+        }
+    });
+
+    // ─── NAV ARROW BUTTONS ────────────────────────────────────────────
+    if (pagePrev) pagePrev.addEventListener('click', prevPage);
+    if (pageNext) pageNext.addEventListener('click', nextPage);
+
+    // ─── RE-MEASURE ON RESIZE ─────────────────────────────────────────
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+        if (!isPageMode()) return;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            schedulePageMeasure();
+        }, 200);
+    });
+
+    // ─── RE-MEASURE ON ZEN / TEXT SIZE ────────────────────────────────
+    if (zenToggle) {
+        zenToggle.addEventListener('click', function () {
+            if (isPageMode()) {
+                setTimeout(function () { schedulePageMeasure(); }, 80);
+            }
+        });
+    }
+
+    textSizeBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            if (isPageMode()) {
+                setTimeout(function () { schedulePageMeasure(); }, 80);
+            }
+        });
+    });
 });
