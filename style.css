@@ -321,6 +321,7 @@ header, footer {
 }
 
 .sizing-note {
+    color: #fff;
     font-size: 1rem;
     font-style: normal;
     font-weight: 500;
@@ -361,7 +362,6 @@ header, footer {
 
 /* ============================================= */
 /* PRODUCT "VIEW ALL" PANEL                      */
-/* ============================================= */
 .view-all-btn {
     display: inline-block;
     margin: 0.5rem 0 1rem;
@@ -378,6 +378,18 @@ header, footer {
 .view-all-btn:hover,
 .view-all-btn:focus-visible {
     background: var(--color-accent);
+    color: #fff;
+}
+
+/* In the dark catalogue section, the button needs light text to
+   be readable against the dark background image. */
+#catalogue .view-all-btn {
+    color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+#catalogue .view-all-btn:hover,
+#catalogue .view-all-btn:focus-visible {
+    background: rgba(255, 255, 255, 0.15);
     color: #fff;
 }
 
