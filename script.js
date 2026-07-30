@@ -191,6 +191,97 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.slider-wrapper').forEach(initSlider);
 
+    // ─── PRODUCT "VIEW ALL" PANELS ────────────────────────────────────
+    // Small button per category opens a popup with every image in that
+    // category in a clean grid — separate from the carousel entirely.
+    // Panel content is generated from the existing slider images, so
+    // there's only one place (the slider markup) to maintain.
+    (function initProductPanels() {
+        let lastFocused = null;
+
+        function openProductPanel(panel) {
+            if (!panel.hidden) return;
+            lastFocused = document.activeElement;
+
+            const backdrop = document.createElement('div');
+            backdrop.className = 'product-panel-backdrop';
+            backdrop.addEventListener('click', () => closeProductPanel(panel));
+            document.body.appendChild(backdrop);
+            panel._backdrop = backdrop;
+
+            panel.hidden = false;
+            panel.querySelector('.product-panel-close').focus();
+        }
+
+        function closeProductPanel(panel) {
+            if (panel.hidden) return;
+            panel.hidden = true;
+            if (panel._backdrop) { panel._backdrop.remove(); panel._backdrop = null; }
+            if (lastFocused) lastFocused.focus();
+        }
+
+        document.querySelectorAll('.category').forEach((category, i) => {
+            const grid = category.querySelector('.product-grid');
+            const viewAllBtn = category.querySelector('.view-all-btn');
+            if (!grid || !viewAllBtn) return;
+
+            const panelId = `product-panel-${i}`;
+            const categoryName = category.querySelector('h2')?.textContent.trim() || 'Products';
+            const images = Array.from(grid.querySelectorAll('img.lightbox-trigger'));
+
+            const panel = document.createElement('div');
+            panel.className = 'product-panel';
+            panel.id = panelId;
+            panel.setAttribute('role', 'dialog');
+            panel.setAttribute('aria-modal', 'true');
+            panel.setAttribute('aria-labelledby', `${panelId}-title`);
+            panel.hidden = true;
+            panel.innerHTML = `
+                <div class="product-panel-bar">
+                    <span class="product-panel-title" id="${panelId}-title">${categoryName} — All designs</span>
+                    <button type="button" class="product-panel-close" aria-label="Close">&times;</button>
+                </div>
+                <div class="product-panel-body">
+                    <div class="product-panel-grid">
+                        ${images.map(img =>
+                            `<img class="lightbox-trigger product-panel-thumb" loading="lazy" src="${img.src}" alt="${img.alt}">`
+                        ).join('')}
+                    </div>
+                </div>`;
+            document.body.appendChild(panel);
+
+            viewAllBtn.setAttribute('aria-haspopup', 'dialog');
+            viewAllBtn.addEventListener('click', () => openProductPanel(panel));
+            panel.querySelector('.product-panel-close').addEventListener('click', () => closeProductPanel(panel));
+
+            // Focus trap
+            panel.addEventListener('keydown', (e) => {
+                if (e.key !== 'Tab') return;
+                const focusables = panel.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])');
+                if (focusables.length === 0) return;
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            });
+        });
+
+        // Escape — capture phase fires before the lightbox handler
+        // modifies the DOM, so we can correctly decide: "is the
+        // lightbox open right now?" before the lightbox closes itself.
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            if (!lightbox.classList.contains('hidden')) return;
+            const openPanel = document.querySelector('.product-panel:not([hidden])');
+            if (openPanel) closeProductPanel(openPanel);
+        }, true);
+    })();
+
     // ─── FEEDBACK PROMPT ─────────────────────────────────────────────
     (function initFeedbackPrompt() {
         const panel = document.getElementById('feedback-prompt');
@@ -199,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         panel.setAttribute('data-feedback-initialized', '');
 
         const STORAGE_KEY = 'jbc-feedback-dismissed';
-        const DELAY_MS = 2 * 60 * 1000;
+        const DELAY_MS = 4 * 60 * 1000;
         const TICK = 1000;
 
         let dismissed = false;
@@ -221,6 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function dismissFeedback() {
             if (!panel) return;
+            dismissed = true;
+            elapsed = 0;
             panel.classList.remove('visible');
             setTimeout(() => { panel.hidden = true; }, 400);
             try {
@@ -231,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function startTimer() {
-            if (timer !== null) return;
+            if (dismissed || timer !== null) return;
             timer = setInterval(() => {
                 elapsed += TICK;
                 if (elapsed >= DELAY_MS) {
@@ -253,6 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         document.addEventListener('visibilitychange', () => {
+            if (dismissed) return;
             if (document.hidden) {
                 pauseTimer();
             } else {
@@ -260,6 +354,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        startTimer();
+        // Start the countdown only after the visitor scrolls past the
+        // catalogue section, so the prompt doesn't interrupt someone who
+        // just landed. IntersectionObserver fires once — no scroll-event
+        // throttling boilerplate needed.
+        const catalogue = document.getElementById('catalogue');
+        if (catalogue) {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    startTimer();
+                    observer.disconnect();
+                }
+            }, { threshold: 0.1 });
+            observer.observe(catalogue);
+        } else {
+            startTimer();
+        }
     })();
 });

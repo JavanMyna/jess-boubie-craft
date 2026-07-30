@@ -238,23 +238,7 @@ header, footer {
     color: #fff;
 }
 
-/* Quiet global sizing note at the top of the shop — says it once, stays
-   easy to find, doesn't compete with the product cards. */
-.sizing-note {
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 0.9rem;
-    font-style: italic;
-    margin: 0.25rem 0 2rem;
-    padding: 0.5rem 0.75rem;
-    border-left: 2px solid rgba(255, 255, 255, 0.25);
-    max-width: 32rem;
-}
 
-.sizing-note a {
-    color: #fff;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-}
 
 .category {
     margin-bottom: 3rem;
@@ -336,6 +320,17 @@ header, footer {
     outline: none;
 }
 
+.sizing-note {
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.08);
+    border-left: 3px solid #fff;
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    margin: 0 0 2rem;
+    max-width: none;
+}
 .lightbox-close {
     position: absolute;
     top: 1rem;
@@ -362,6 +357,101 @@ header, footer {
 
 .lightbox-close:hover {
     background: #fff;
+}
+
+/* ============================================= */
+/* PRODUCT "VIEW ALL" PANEL                      */
+/* ============================================= */
+.view-all-btn {
+    display: inline-block;
+    margin: 0.5rem 0 1rem;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.view-all-btn:hover,
+.view-all-btn:focus-visible {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.product-panel-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 900;
+}
+
+.product-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 720px);
+    max-height: 85vh;
+    background: var(--color-bg);
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    z-index: 901;
+    animation: panel-pop-in 0.18s ease;
+}
+.product-panel[hidden] { display: none; }
+
+@keyframes panel-pop-in {
+    from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.product-panel-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.1rem;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 12px 12px 0 0;
+}
+
+.product-panel-title { font-size: 1rem; font-weight: 600; }
+
+.product-panel-close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+}
+.product-panel-close:hover { background: rgba(255, 255, 255, 0.15); }
+
+.product-panel-body { padding: 1.1rem; overflow-y: auto; }
+
+/* Uniform, clean grid — deliberately NOT the mosaic/variable-size layout
+   used in .gallery-mosaic. Every thumbnail is the same size. */
+.product-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.75rem;
+}
+
+.product-panel-thumb {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: zoom-in;
+    display: block;
 }
 
 /* ============================================= */
@@ -832,13 +922,13 @@ section {
     background: #fff;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 16px 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    padding: 14px 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     font-family: system-ui, -apple-system, sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
     color: #1e293b;
-    z-index: 9999;
+    z-index: 500;
     transform: translateY(20px);
     opacity: 0;
     transition: transform 0.4s ease, opacity 0.4s ease;
