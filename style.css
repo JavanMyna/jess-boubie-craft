@@ -857,19 +857,28 @@ section {
         backdrop-filter: blur(6px);
     }
 
-    /* Plain gallery grids drop to 1 column; the mosaic drops to 2 so the
-       staggered variety still reads on a phone. */
+    /* Plain gallery grids drop to 1 column */
     .gallery-grid {
         grid-template-columns: minmax(0, 1fr);
     }
 
+    /* Mobile gallery: uniform 2-column square grid.
+       Every item gets aspect-ratio: 1/1 so tall portrait photos
+       and stacked bracelet shots don't blow up the viewport.
+       All span classes are flattened to 1x1 — no exceptions. */
     .gallery-mosaic {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: 100px;
+        grid-auto-rows: auto;
+    }
+    .gallery-item {
+        aspect-ratio: 1 / 1;
+        grid-row: span 1;
     }
     .gallery-item--wide,
-    .gallery-item--big {
-        grid-column: span 2;
+    .gallery-item--big,
+    .gallery-item--tall {
+        grid-column: span 1;
+        grid-row: span 1;
     }
 
     .story-text {
