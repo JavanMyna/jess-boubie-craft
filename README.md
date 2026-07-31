@@ -14,8 +14,8 @@ mass production, no rush orders.
 
 ## Live site
 
-Deployed as a static site on Cloudflare Workers (see `wrangler.jsonc`).
-- URL: https://jess-boubie-craft.mynko.workers.dev/
+Deployed as a static site
+- URL: https://jessboubiecraft.com
 
 ## Features
 
