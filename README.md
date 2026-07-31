@@ -22,31 +22,32 @@ Deployed as a static site on Cloudflare Workers (see `wrangler.jsonc`).
 ### Catalogue site (`index.html`)
 <img width="1366" height="635" alt="image" src="https://github.com/user-attachments/assets/14251fd3-7ba0-42b6-af20-cf7dbc0640fa" />
 - Product catalogue with lightbox image preview
-- Photo gallery
+- "View all designs" panel per category — opens a grid of every product image
+  in that category without affecting the carousel
+- Photo gallery with mosaic layout
 - "Our History & Contact" section
-- Feedback prompt widget, linked to a Google Form
+- Feedback prompt widget (engagement-triggered via IntersectionObserver)
 - Umami analytics
 
-### Read Her Story (`story.html`)
+### Read Her Story (`story.html`) — temporarily disabled
 <img width="1366" height="635" alt="image" src="https://github.com/user-attachments/assets/4a92ce41-1449-492c-915b-5656d07d2d2c" />
 A separate reading experience for the artisan's autobiography, styled as an
-interactive book:
+interactive book. Currently disabled (nav link commented out in `index.html`)
+while the page-by-page swipe mode is being reworked:
 - 3D book open/close animation
 - Dark / light mode
 - Zen reading mode (serif type, wider margins, softer rhythm)
 - Adjustable text size (S / M / L)
-- Chrome (header/footer) hide toggle, and a "Comfy" preset combining zen +
-  hidden chrome
-- Page-by-page swipe reading mode — see **Known issues**
+- Chrome (header/footer) hide toggle, and a "Comfy" preset
 - All reading preferences persist across visits via `localStorage`
 
 ## Known issues / TODO
 
-- **Page-by-page swipe mode is currently broken.** Being reworked. Scroll
-  mode is unaffected and works normally.
+- **Story page temporarily disabled.** The nav link in `index.html` is
+  commented out. Page-by-page swipe mode on `story.html` is being reworked;
+  scroll mode is unaffected.
 - The feedback link on `story.html` still points to a placeholder
-  (`FEEDBACK_FORM_URL` in `story.js`) and needs the real Google Form URL —
-  `script.js` (main site) already has the real one, `story.js` doesn't yet.
+  (`FEEDBACK_FORM_URL` in `story.js`) and needs the real Google Form URL.
 - No automated tests; changes are checked manually across screen sizes.
 
 ## Tech stack
@@ -61,14 +62,17 @@ interactive book:
 ```
 .
 ├── index.html        # Main catalogue site
-├── script.js          # Catalogue interactions (lightbox, feedback prompt, etc.)
+├── script.js          # Catalogue interactions (lightbox, panels, feedback)
 ├── style.css           # Main site styles
-├── story.html            # "Read Her Story" reading experience
+├── story.html            # "Read Her Story" reading experience (disabled)
 ├── story.js                # Story page interactions
 ├── story.css                 # Story page styles
 ├── images/                     # Product & site photography
 ├── favicon/                       # Favicon set
-├── wrangler.jsonc                    # Cloudflare Workers deployment config
+├── tools/                           # Utility scripts
+│   └── audit_exif.py                 # EXIF/GPS scanner for image privacy
+├── docs/                               # Planning & briefs
+├── wrangler.jsonc                        # Cloudflare Workers deployment config
 └── LICENSE
 ```
 
@@ -93,4 +97,6 @@ tools used throughout planning and implementation.
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT applies to source code only. All images, logos, photography, and written
+content in this repository are proprietary — copyright Jess Boubie Craft.
+See [LICENSE](./LICENSE).
