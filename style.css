@@ -332,6 +332,11 @@ header, footer {
     margin: 0 0 2rem;
     max-width: none;
 }
+
+.sizing-note a {
+    color: #d4a853;
+    text-decoration: underline;
+}
 .lightbox-close {
     position: absolute;
     top: 1rem;
